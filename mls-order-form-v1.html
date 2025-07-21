@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLS League Champions Awards Order Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 10px;
+            line-height: 1.5;
+        }
+        
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+        
+        .form-container {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 8px;
+            font-size: 24px;
+        }
+        
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .garment-section {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .garment-section.active {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+        
+        .garment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .garment-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .quantity-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .quantity-indicator {
+            background-color: #4CAF50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .quantity-status {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+            text-align: right;
+            font-style: italic;
+        }
+        
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .size-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .size-input label {
+            font-weight: normal;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        
+        .size-input input {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        
+        /* Style number inputs with arrows visible */
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+        
+        .add-garment-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 15px auto;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        
+        .add-garment-btn:hover {
+            background-color: #1976D2;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .color-selection {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        
+        .color-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            display: block;
+        }
+        
+        .color-box:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .color-box.selected {
+            border-color: #4CAF50;
+            transform: scale(1.2);
+        }
+        
+        .color-box.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        
+        .color-box.white-color.selected::after {
+            color: #333;
+            text-shadow: 0 0 2px rgba(255,255,255,0.8);
+        }
+        
+        .color-box.custom-color {
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        
+        .selected-color-display {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #555;
+            font-weight: normal;
+        }
+        
+        .color-price-note {
+            margin-top: 10px;
+            font-size: 11px;
+            padding: 6px 10px;
+            background-color: #fff3cd;
+            border-radius: 4px;
+            color: #856404;
+            display: none;
+        }
+        
+        input[type="radio"] {
+            display: none;
+        }
+        
+        /* Custom color picker styles */
+        .custom-color-picker {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .color-picker-input {
+            width: 50px;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 2px;
+        }
+        
+        .color-picker-hex {
+            width: 80px;
+            padding: 4px 6px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .custom-color-picker button {
+            margin-right: 5px;
+            padding: 4px 8px;
+            font-size: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .custom-color-picker button.cancel {
+            background: #999;
+        }
+        
+        .cost-calculator {
+            background-color: #e8f5e9;
+            padding: 12px;
+            border-radius: 6px;
+            border: 2px solid #4CAF50;
+            position: sticky;
+            top: 10px;
+            height: fit-content;
+            width: 250px;
+            flex-shrink: 0;
+        }
+        
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            padding: 3px 0;
+            font-size: 13px;
+        }
+        
+        .cost-detail {
+            font-size: 10px;
+            color: #666;
+            margin-left: 10px;
+            margin-top: 1px;
+        }
+        
+        .total-cost {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+            text-align: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid #4CAF50;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .congratulations-box {
+            background-color: #f0f8ff;
+            border: 2px solid #4CAF50;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .congratulations-box strong {
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        
+        .submit-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .summary-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .summary-content {
+            background-color: white;
+            margin: 30px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .summary-text {
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        
+        .remove-garment-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .remove-garment-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .ink-colors-section {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .ink-colors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        
+        .ink-color-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ink-color-group > label {
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        
+        .visual-preview {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-text {
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 8px 16px;
+        }
+        
+        .preview-label {
+            position: absolute;
+            bottom: 3px;
+            right: 8px;
+            font-size: 10px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .other-sizes-section {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .other-sizes-input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+        
+        .other-sizes-note {
+            font-size: 11px;
+            color: #856404;
+            margin-top: 5px;
+            font-style: italic;
+            background-color: #fff3cd;
+            padding: 5px 8px;
+            border-radius: 3px;
+            display: none;
+        }
+        
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .cost-calculator {
+                position: relative;
+                margin-top: 20px;
+                width: 100%;
+            }
+            
+            .size-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="form-container">
+            <h1>MLS League Champions Awards Order Form</h1>
+            
+            <form id="awardsForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="seasonWon">Season Won:</label>
+                        <input type="text" id="seasonWon" name="seasonWon" required>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="cityAndDay">City & Day of Play:</label>
+                        <input type="text" id="cityAndDay" name="cityAndDay" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="teamName">Team Name (exactly as you want it printed):</label>
+                    <input type="text" id="teamName" name="teamName" required>
+                </div>
+                
+                <div class="info">
+                    <strong>Note:</strong> You can select up to 2 different garment types/colors. White and ash gray garments include 2 ink colors. For 2 colors on other garments, add $25.
+                </div>
+                
+                <!-- Garment Choice 1 -->
+                <div class="garment-section active" id="garment1">
+                    <div class="garment-header">
+                        <h3>Garment Choice 1</h3>
+                        <div class="quantity-info">
+                            <div class="quantity-indicator" id="g1-quantity">0 items</div>
+                            <div class="quantity-status" id="g1-status"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="garmentType1">Garment Type:</label>
+                        <select id="garmentType1" name="garmentType1" required>
+                            <option value="">Select Garment Type</option>
+                            <option value="tshirt">Short Sleeve T-Shirts</option>
+                            <option value="performance">Performance Fabric T-Shirts</option>
+                            <option value="longsleeve">Long Sleeve T-Shirts</option>
+                            <option value="hoodie">Hooded Sweatshirts</option>
+                        </select>
+                    </div>
+                    
+                    <div class="color-selection hidden" id="colorSelection1">
+                        <label style="margin-bottom: 6px; display: block;">Garment Color: <span class="selected-color-display" id="selectedGarmentColor1">White</span></label>
+                        <div class="color-options" id="colorOptions1">
+                            <!-- Colors will be added by JavaScript -->
+                        </div>
+                        <div class="color-price-note" id="colorPriceNote1">
+                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee1"></span> per shirt for colored garments
+                        </div>
+                    </div>
+                    
+                    <div class="ink-colors-section hidden" id="inkColors1">
+                        <label style="margin-bottom: 8px; display: block; font-weight: bold;">Team Name Ink Colors:</label>
+                        <div class="ink-colors-grid">
+                            <div class="ink-color-group">
+                                <label>Fill Color: <span class="selected-color-display" id="selectedInkFill1">Black</span></label>
+                                <div class="color-options" id="inkFillOptions1">
+                                    <!-- Ink colors will be added by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="ink-color-group">
+                                <label>Outline Color: <span class="selected-color-display" id="selectedInkOutline1">None</span></label>
+                                <div class="color-options" id="inkOutlineOptions1">
+                                    <!-- Outline colors will be added by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="warning" id="inkWarning1" style="display: none; margin-top: 8px;">
+                            <strong>Note:</strong> Two-color ink on colored garments adds $25 to your order.
+                        </div>
+                    </div>
+                    
+                    <div class="visual-preview hidden" id="preview1">
+                        <div class="preview-text" id="teamNamePreview1">TEAM NAME</div>
+                        <span class="preview-label">Preview</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Sizes & Quantity:</label>
+                        <div class="size-grid">
+                            <div class="size-input">
+                                <label for="g1_small">Small</label>
+                                <input type="number" id="g1_small" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_medium">Medium</label>
+                                <input type="number" id="g1_medium" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_large">Large</label>
+                                <input type="number" id="g1_large" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_xl">XL</label>
+                                <input type="number" id="g1_xl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_xxl">2XL</label>
+                                <input type="number" id="g1_xxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_xxxl">3XL</label>
+                                <input type="number" id="g1_xxxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_xxxxl">4XL</label>
+                                <input type="number" id="g1_xxxxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g1_other">Other</label>
+                                <input type="number" id="g1_other" min="0" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="other-sizes-section">
+                            <label for="g1_other_specify">Other Sizes (specify which sizes):</label>
+                            <input type="text" id="g1_other_specify" class="other-sizes-input" placeholder="e.g., Tall XL, 5XL, Youth Large">
+                            <div class="other-sizes-note" id="g1_other_note">$3 upcharge per unit for tall and extended sizes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add Second Garment Button -->
+                <button type="button" class="add-garment-btn" id="addGarmentBtn">+ Add Second Garment Type</button>
+                
+                <!-- Garment Choice 2 -->
+                <div class="garment-section hidden" id="garment2">
+                    <div class="garment-header">
+                        <div class="garment-header-left">
+                            <h3>Garment Choice 2</h3>
+                            <button type="button" class="remove-garment-btn" id="removeGarment2Btn">Remove</button>
+                        </div>
+                        <div class="quantity-info">
+                            <div class="quantity-indicator" id="g2-quantity">0 items</div>
+                            <div class="quantity-status" id="g2-status"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="garmentType2">Garment Type:</label>
+                        <select id="garmentType2" name="garmentType2">
+                            <option value="">Select Garment Type</option>
+                            <option value="tshirt">Short Sleeve T-Shirts</option>
+                            <option value="performance">Performance Fabric T-Shirts</option>
+                            <option value="longsleeve">Long Sleeve T-Shirts</option>
+                            <option value="hoodie">Hooded Sweatshirts</option>
+                        </select>
+                    </div>
+                    
+                    <div class="color-selection hidden" id="colorSelection2">
+                        <label style="margin-bottom: 6px; display: block;">Garment Color: <span class="selected-color-display" id="selectedGarmentColor2">White</span></label>
+                        <div class="color-options" id="colorOptions2">
+                            <!-- Colors will be added by JavaScript -->
+                        </div>
+                        <div class="color-price-note" id="colorPriceNote2">
+                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee2"></span> per shirt for colored garments
+                        </div>
+                    </div>
+                    
+                    <div class="ink-colors-section hidden" id="inkColors2">
+                        <label style="margin-bottom: 8px; display: block; font-weight: bold;">Team Name Ink Colors:</label>
+                        <div class="ink-colors-grid">
+                            <div class="ink-color-group">
+                                <label>Fill Color: <span class="selected-color-display" id="selectedInkFill2">Black</span></label>
+                                <div class="color-options" id="inkFillOptions2">
+                                    <!-- Ink colors will be added by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="ink-color-group">
+                                <label>Outline Color: <span class="selected-color-display" id="selectedInkOutline2">None</span></label>
+                                <div class="color-options" id="inkOutlineOptions2">
+                                    <!-- Outline colors will be added by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="warning" id="inkWarning2" style="display: none; margin-top: 8px;">
+                            <strong>Note:</strong> Two-color ink on colored garments adds $25 to your order.
+                        </div>
+                    </div>
+                    
+                    <div class="visual-preview hidden" id="preview2">
+                        <div class="preview-text" id="teamNamePreview2">TEAM NAME</div>
+                        <span class="preview-label">Preview</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Sizes & Quantity:</label>
+                        <div class="size-grid">
+                            <div class="size-input">
+                                <label for="g2_small">Small</label>
+                                <input type="number" id="g2_small" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_medium">Medium</label>
+                                <input type="number" id="g2_medium" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_large">Large</label>
+                                <input type="number" id="g2_large" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_xl">XL</label>
+                                <input type="number" id="g2_xl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_xxl">2XL</label>
+                                <input type="number" id="g2_xxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_xxxl">3XL</label>
+                                <input type="number" id="g2_xxxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_xxxxl">4XL</label>
+                                <input type="number" id="g2_xxxxl" min="0" value="0">
+                            </div>
+                            <div class="size-input">
+                                <label for="g2_other">Other</label>
+                                <input type="number" id="g2_other" min="0" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="other-sizes-section">
+                            <label for="g2_other_specify">Other Sizes (specify which sizes):</label>
+                            <input type="text" id="g2_other_specify" class="other-sizes-input" placeholder="e.g., Tall XL, 5XL, Youth Large">
+                            <div class="other-sizes-note" id="g2_other_note">$3 upcharge per unit for tall and extended sizes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">Generate Order Summary</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="cost-calculator">
+            <h3 style="font-size: 16px; margin-bottom: 10px;">Cost Calculator</h3>
+            <div id="costBreakdown">
+                <div class="cost-item">
+                    <span>Garment Choice 1:</span>
+                    <span id="garment1Cost">$0</span>
+                </div>
+                <div id="garment1Details" class="cost-detail"></div>
+                
+                <div class="cost-item hidden" id="garment2CostRow">
+                    <span>Garment Choice 2:</span>
+                    <span id="garment2Cost">$0</span>
+                </div>
+                <div id="garment2Details" class="cost-detail hidden"></div>
+                
+                <div class="cost-item">
+                    <span>Two-color ink on dark:</span>
+                    <span id="inkCost">$0</span>
+                </div>
+                
+                <div class="cost-item hidden" id="otherSizesCostRow">
+                    <span>Other sizes upcharge:</span>
+                    <span id="otherSizesCost">$0</span>
+                </div>
+            </div>
+            <div class="total-cost">
+                Total: $<span id="totalCost">0</span>
+            </div>
+            
+            <div class="congratulations-box">
+                <strong>Congratulations!</strong>
+                MLS provides league champions with awards to celebrate your team's success!
+                <br><br>
+                Submit by email to <strong>awardsorders@mlsoftball.com</strong> within <strong>45 DAYS</strong> of your win.
+                <br><br>
+                Questions? Email <strong>awardsorders@mlsoftball.com</strong> or call <strong>714-289-1983 x103</strong>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Summary Modal -->
+    <div id="summaryModal" class="summary-modal">
+        <div class="summary-content">
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <h2>Order Summary</h2>
+            <div class="summary-text" id="summaryText"></div>
+            <div style="margin-top: 15px;">
+                <p><strong>Next Steps:</strong></p>
+                <p>1. Copy this summary</p>
+                <p>2. Email to: awardsorders@mlsoftball.com</p>
+                <p>3. Submit within 45 days of your championship win</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    (function() {
+        'use strict';
+        
+        // Color definitions
+        const garmentColors = [
+            { name: 'White', value: '#ffffff', isWhite: true },
+            { name: 'Ash Gray', value: '#d1d5db' },
+            { name: 'Black', value: '#000000' },
+            { name: 'Navy Blue', value: '#1e3a8a' },
+            { name: 'Red', value: '#dc2626' },
+            { name: 'Royal Blue', value: '#2563eb' },
+            { name: 'Dark Gray', value: '#4b5563' },
+            { name: 'Maroon', value: '#7f1d1d' },
+            { name: 'Forest Green', value: '#14532d' }
+        ];
+        
+        const inkColors = [
+            { name: 'Black', value: '#000000' },
+            { name: 'White', value: '#ffffff', isWhite: true },
+            { name: 'Red', value: '#dc2626' },
+            { name: 'Navy', value: '#1e3a8a' },
+            { name: 'Royal Blue', value: '#2563eb' },
+            { name: 'Forest Green', value: '#14532d' },
+            { name: 'Maroon', value: '#7f1d1d' },
+            { name: 'Gold', value: '#fbbf24' },
+            { name: 'Orange', value: '#f97316' },
+            { name: 'Gray', value: '#6b7280' }
+        ];
+        
+        const outlineColors = [
+            { name: 'None', value: '#f3f4f6', isWhite: true },
+            ...inkColors
+        ];
+        
+        // Pricing structure
+        const pricing = {
+            upgrade: {
+                'tshirt-white': 0,
+                'tshirt-ash': 4,
+                'tshirt-color': 7,
+                'performance': 12,
+                'longsleeve': 16,
+                'hoodie': 20
+            },
+            extra: {
+                'tshirt-white': 12,
+                'tshirt-ash': 15,
+                'tshirt-color': 15,
+                'performance': 20,
+                'longsleeve': 22,
+                'hoodie': 28
+            }
+        };
+        
+        const garmentNames = {
+            'tshirt': 'Short Sleeve T-Shirts',
+            'performance': 'Performance T-Shirts',
+            'longsleeve': 'Long Sleeve T-Shirts',
+            'hoodie': 'Hooded Sweatshirts'
+        };
+        
+        // Track custom colors
+        const customColors = {
+            inkFill1: null,
+            inkFill2: null,
+            inkOutline1: null,
+            inkOutline2: null
+        };
+        
+        // Create color box HTML
+        function createColorBox(color, name, value, isSelected = false) {
+            const box = document.createElement('label');
+            box.className = 'color-box' + (isSelected ? ' selected' : '') + (color.isWhite ? ' white-color' : '');
+            box.style.backgroundColor = color.value;
+            box.title = color.name;
+            if (color.isWhite) {
+                box.style.border = '1px solid #ddd';
+            }
+            
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = name;
+            radio.value = value || color.name;
+            radio.checked = isSelected;
+            
+            box.appendChild(radio);
+            
+            return box;
+        }
+        
+        // Create custom color picker
+        function createCustomColorPicker(name) {
+            const box = document.createElement('label');
+            box.className = 'color-box custom-color';
+            box.innerHTML = '+';
+            box.title = 'Custom Color';
+            
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = name;
+            radio.value = 'custom';
+            box.appendChild(radio);
+            
+            box.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                openColorPicker(name, box);
+            });
+            
+            return box;
+        }
+        
+        // Open color picker dialog
+        function openColorPicker(name, triggerElement) {
+            const existing = document.querySelector('.custom-color-picker');
+            if (existing) existing.remove();
+            
+            const picker = document.createElement('div');
+            picker.className = 'custom-color-picker';
+            
+            let currentColor = customColors[name] || '#ff0000';
+            
+            picker.innerHTML = `
+                <div class="color-picker-wrapper">
+                    <input type="color" class="color-picker-input" id="colorPickerInput" value="${currentColor}">
+                    <input type="text" class="color-picker-hex" id="colorHexInput" value="${currentColor}" maxlength="7" placeholder="#000000">
+                </div>
+                <button id="colorPickerOk">Select Color</button>
+                <button id="colorPickerCancel" class="cancel">Cancel</button>
+            `;
+            
+            const rect = triggerElement.getBoundingClientRect();
+            picker.style.left = Math.min(rect.left, window.innerWidth - 200) + 'px';
+            picker.style.top = (rect.bottom + 5) + 'px';
+            
+            document.body.appendChild(picker);
+            
+            const colorInput = picker.querySelector('#colorPickerInput');
+            const hexInput = picker.querySelector('#colorHexInput');
+            const okBtn = picker.querySelector('#colorPickerOk');
+            const cancelBtn = picker.querySelector('#colorPickerCancel');
+            
+            colorInput.addEventListener('input', function(e) {
+                currentColor = e.target.value;
+                hexInput.value = currentColor;
+            });
+            
+            hexInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                if (!value.startsWith('#')) {
+                    value = '#' + value;
+                }
+                
+                if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                    currentColor = value;
+                    colorInput.value = currentColor;
+                }
+            });
+            
+            okBtn.addEventListener('click', function() {
+                customColors[name] = currentColor;
+                
+                triggerElement.innerHTML = '';
+                triggerElement.style.background = currentColor;
+                triggerElement.classList.add('selected');
+                
+                const newRadio = document.createElement('input');
+                newRadio.type = 'radio';
+                newRadio.name = name;
+                newRadio.value = 'custom';
+                newRadio.checked = true;
+                triggerElement.appendChild(newRadio);
+                
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    if (r.parentElement && r.parentElement !== triggerElement) {
+                        r.parentElement.classList.remove('selected');
+                    }
+                });
+                
+                updateSelectedColorDisplay(name, currentColor);
+                
+                const garmentNum = name.includes('1') ? '1' : '2';
+                updatePreview(garmentNum);
+                updateInkWarning(garmentNum);
+                updateCost();
+                
+                picker.remove();
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                picker.remove();
+            });
+            
+            setTimeout(() => {
+                document.addEventListener('click', function closeOnClickOutside(e) {
+                    if (!picker.contains(e.target) && e.target !== triggerElement) {
+                        picker.remove();
+                        document.removeEventListener('click', closeOnClickOutside);
+                    }
+                });
+            }, 100);
+        }
+        
+        // Initialize color options
+        function initializeColors() {
+            const colorOptions1 = document.getElementById('colorOptions1');
+            const colorOptions2 = document.getElementById('colorOptions2');
+            
+            garmentColors.forEach((color, index) => {
+                colorOptions1.appendChild(createColorBox(color, 'garmentColor1', color.name, index === 0));
+                colorOptions2.appendChild(createColorBox(color, 'garmentColor2', color.name, index === 0));
+            });
+            
+            const inkFillOptions1 = document.getElementById('inkFillOptions1');
+            const inkFillOptions2 = document.getElementById('inkFillOptions2');
+            
+            inkColors.forEach((color, index) => {
+                inkFillOptions1.appendChild(createColorBox(color, 'inkFill1', color.name, index === 0));
+                inkFillOptions2.appendChild(createColorBox(color, 'inkFill2', color.name, index === 0));
+            });
+            
+            inkFillOptions1.appendChild(createCustomColorPicker('inkFill1'));
+            inkFillOptions2.appendChild(createCustomColorPicker('inkFill2'));
+            
+            const inkOutlineOptions1 = document.getElementById('inkOutlineOptions1');
+            const inkOutlineOptions2 = document.getElementById('inkOutlineOptions2');
+            
+            outlineColors.forEach((color, index) => {
+                inkOutlineOptions1.appendChild(createColorBox(color, 'inkOutline1', color.name, index === 0));
+                inkOutlineOptions2.appendChild(createColorBox(color, 'inkOutline2', color.name, index === 0));
+            });
+            
+            inkOutlineOptions1.appendChild(createCustomColorPicker('inkOutline1'));
+            inkOutlineOptions2.appendChild(createCustomColorPicker('inkOutline2'));
+        }
+        
+        // Main initialization
+        function init() {
+            console.log('Initializing form...');
+            
+            initializeColors();
+            
+            const form = document.getElementById('awardsForm');
+            const teamNameInput = document.getElementById('teamName');
+            const addGarmentBtn = document.getElementById('addGarmentBtn');
+            const removeGarmentBtn = document.getElementById('removeGarment2Btn');
+            const garment2Section = document.getElementById('garment2');
+            const garmentType1 = document.getElementById('garmentType1');
+            const garmentType2 = document.getElementById('garmentType2');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            
+            const g1SizeInputs = ['g1_small', 'g1_medium', 'g1_large', 'g1_xl', 'g1_xxl', 'g1_xxxl', 'g1_xxxxl']
+                .map(id => document.getElementById(id));
+            const g2SizeInputs = ['g2_small', 'g2_medium', 'g2_large', 'g2_xl', 'g2_xxl', 'g2_xxxl', 'g2_xxxxl']
+                .map(id => document.getElementById(id));
+            
+            const g1OtherInput = document.getElementById('g1_other');
+            const g2OtherInput = document.getElementById('g2_other');
+            const g1OtherSpecify = document.getElementById('g1_other_specify');
+            const g2OtherSpecify = document.getElementById('g2_other_specify');
+            
+            [...g1SizeInputs, ...g2SizeInputs, g1OtherInput, g2OtherInput].forEach(input => {
+                input.addEventListener('wheel', function(e) {
+                    e.preventDefault();
+                });
+            });
+            
+            function getSelectedColor(name) {
+                const selected = document.querySelector(`input[name="${name}"]:checked`);
+                if (selected && selected.value === 'custom') {
+                    return customColors[name] || '#000000';
+                }
+                return selected ? selected.value : '';
+            }
+            
+            function updateSelectedColorDisplay(name, value) {
+                let displayId = '';
+                if (name === 'garmentColor1') displayId = 'selectedGarmentColor1';
+                else if (name === 'garmentColor2') displayId = 'selectedGarmentColor2';
+                else if (name === 'inkFill1') displayId = 'selectedInkFill1';
+                else if (name === 'inkFill2') displayId = 'selectedInkFill2';
+                else if (name === 'inkOutline1') displayId = 'selectedInkOutline1';
+                else if (name === 'inkOutline2') displayId = 'selectedInkOutline2';
+                
+                const display = document.getElementById(displayId);
+                if (display) {
+                    if (value.startsWith('#')) {
+                        display.textContent = `Custom (${value})`;
+                    } else if (value === 'custom' && customColors[name]) {
+                        display.textContent = `Custom (${customColors[name]})`;
+                    } else {
+                        display.textContent = value;
+                    }
+                }
+            }
+            
+            function getGarmentQuantity(sizeInputs) {
+                return sizeInputs.reduce((sum, input) => sum + parseInt(input.value || 0), 0);
+            }
+            
+            function getGarmentTypeWithColor(baseType, color) {
+                if (baseType === 'tshirt') {
+                    if (color === 'White') return 'tshirt-white';
+                    if (color === 'Ash Gray') return 'tshirt-ash';
+                    return 'tshirt-color';
+                }
+                return baseType;
+            }
+            
+            function updateColorSelection(typeSelect, garmentNum) {
+                const colorSelection = document.getElementById(`colorSelection${garmentNum}`);
+                const inkColors = document.getElementById(`inkColors${garmentNum}`);
+                const preview = document.getElementById(`preview${garmentNum}`);
+                
+                if (typeSelect.value) {
+                    colorSelection.classList.remove('hidden');
+                    inkColors.classList.remove('hidden');
+                    preview.classList.remove('hidden');
+                    updateColorPriceNote(garmentNum);
+                    updatePreview(garmentNum);
+                    updateInkWarning(garmentNum);
+                } else {
+                    colorSelection.classList.add('hidden');
+                    inkColors.classList.add('hidden');
+                    preview.classList.add('hidden');
+                }
+            }
+            
+            function updateColorPriceNote(garmentNum) {
+                const typeSelect = garmentNum === '1' ? garmentType1 : garmentType2;
+                const selectedColor = getSelectedColor(`garmentColor${garmentNum}`);
+                const priceNote = document.getElementById(`colorPriceNote${garmentNum}`);
+                const upgradeFee = document.getElementById(`colorUpgradeFee${garmentNum}`);
+                
+                if (typeSelect.value === 'tshirt' && selectedColor !== 'White' && selectedColor !== 'Ash Gray') {
+                    priceNote.style.display = 'block';
+                    upgradeFee.textContent = '+$7';
+                } else if (selectedColor === 'Ash Gray' && typeSelect.value === 'tshirt') {
+                    priceNote.style.display = 'block';
+                    upgradeFee.textContent = '+$4';
+                } else {
+                    priceNote.style.display = 'none';
+                }
+            }
+            
+            function updatePreview(garmentNum) {
+                const garmentColor = getSelectedColor(`garmentColor${garmentNum}`);
+                const fillColor = getSelectedColor(`inkFill${garmentNum}`);
+                const outlineColor = getSelectedColor(`inkOutline${garmentNum}`);
+                const teamName = teamNameInput.value || 'TEAM NAME';
+                
+                const preview = document.getElementById(`preview${garmentNum}`);
+                const teamNamePreview = document.getElementById(`teamNamePreview${garmentNum}`);
+                
+                const selectedGarmentColor = garmentColors.find(c => c.name === garmentColor);
+                if (selectedGarmentColor) {
+                    preview.style.backgroundColor = selectedGarmentColor.value;
+                } else if (garmentColor.startsWith('#')) {
+                    preview.style.backgroundColor = garmentColor;
+                }
+                
+                teamNamePreview.textContent = teamName;
+                
+                let fillColorValue = '#000000';
+                let outlineColorValue = null;
+                
+                if (fillColor.startsWith('#')) {
+                    fillColorValue = fillColor;
+                } else {
+                    const selectedFillColor = inkColors.find(c => c.name === fillColor);
+                    if (selectedFillColor) fillColorValue = selectedFillColor.value;
+                }
+                
+                if (outlineColor && outlineColor !== 'None') {
+                    if (outlineColor.startsWith('#')) {
+                        outlineColorValue = outlineColor;
+                    } else {
+                        const selectedOutlineColor = outlineColors.find(c => c.name === outlineColor);
+                        if (selectedOutlineColor) outlineColorValue = selectedOutlineColor.value;
+                    }
+                }
+                
+                teamNamePreview.style.color = fillColorValue;
+                if (outlineColorValue) {
+                    teamNamePreview.style.textShadow = `
+                        -1px -1px 0 ${outlineColorValue},
+                        1px -1px 0 ${outlineColorValue},
+                        -1px 1px 0 ${outlineColorValue},
+                        1px 1px 0 ${outlineColorValue}
+                    `;
+                } else {
+                    teamNamePreview.style.textShadow = 'none';
+                }
+            }
+            
+            function updateInkWarning(garmentNum) {
+                const garmentColor = getSelectedColor(`garmentColor${garmentNum}`);
+                const outlineColor = getSelectedColor(`inkOutline${garmentNum}`);
+                const warning = document.getElementById(`inkWarning${garmentNum}`);
+                
+                if (outlineColor && outlineColor !== 'None' && garmentColor !== 'White' && garmentColor !== 'Ash Gray') {
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+            }
+            
+            function updateOtherSizesNote(garmentNum) {
+                const otherInput = garmentNum === '1' ? g1OtherInput : g2OtherInput;
+                const noteId = garmentNum === '1' ? 'g1_other_note' : 'g2_other_note';
+                const note = document.getElementById(noteId);
+                
+                if (parseInt(otherInput.value || 0) > 0) {
+                    note.style.display = 'block';
+                } else {
+                    note.style.display = 'none';
+                }
+            }
+            
+            window.updatePreview = updatePreview;
+            window.updateInkWarning = updateInkWarning;
+            window.updateSelectedColorDisplay = updateSelectedColorDisplay;
+            window.updateCost = updateCost;
+            
+            function updateQuantityIndicators() {
+                const g1Qty = getGarmentQuantity(g1SizeInputs);
+                const g2Qty = getGarmentQuantity(g2SizeInputs);
+                const g1Other = parseInt(g1OtherInput.value || 0);
+                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Total = g1Qty + g1Other;
+                const g2Total = g2Qty + g2Other;
+                
+                const baseType1 = garmentType1.value;
+                const baseType2 = garmentType2.value;
+                const color1 = getSelectedColor('garmentColor1');
+                const color2 = getSelectedColor('garmentColor2');
+                
+                const type1 = baseType1 ? getGarmentTypeWithColor(baseType1, color1) : '';
+                const type2 = baseType2 ? getGarmentTypeWithColor(baseType2, color2) : '';
+                
+                document.getElementById('g1-quantity').textContent = `${g1Total} items`;
+                document.getElementById('g2-quantity').textContent = `${g2Total} items`;
+                
+                const garmentOrders = [];
+                
+                if (type1 && g1Total > 0) {
+                    garmentOrders.push({
+                        id: 1,
+                        type: type1,
+                        qty: g1Total,
+                        upgradeCost: type1 === 'tshirt-white' ? 0 : pricing.upgrade[type1],
+                        extraCost: pricing.extra[type1]
+                    });
+                }
+                
+                if (type2 && g2Total > 0 && !garment2Section.classList.contains('hidden')) {
+                    garmentOrders.push({
+                        id: 2,
+                        type: type2,
+                        qty: g2Total,
+                        upgradeCost: type2 === 'tshirt-white' ? 0 : pricing.upgrade[type2],
+                        extraCost: pricing.extra[type2]
+                    });
+                }
+                
+                garmentOrders.sort((a, b) => a.upgradeCost - b.upgradeCost);
+                
+                let remainingDiscount = 15;
+                const allocation = {};
+                
+                garmentOrders.forEach(order => {
+                    const discountQty = Math.min(order.qty, remainingDiscount);
+                    const fullPriceQty = order.qty - discountQty;
+                    
+                    allocation[order.id] = {
+                        type: order.type,
+                        discountQty: discountQty,
+                        fullPriceQty: fullPriceQty,
+                        upgradeCost: order.upgradeCost,
+                        extraCost: order.extraCost
+                    };
+                    
+                    remainingDiscount -= discountQty;
+                });
+                
+                let g1Status = '';
+                let g2Status = '';
+                
+                if (allocation[1]) {
+                    const a1 = allocation[1];
+                    if (a1.type === 'tshirt-white') {
+                        if (a1.discountQty > 0) g1Status = `${a1.discountQty} free`;
+                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ $${a1.extraCost}`;
+                    } else {
+                        if (a1.discountQty > 0) g1Status = `${a1.discountQty} upgrade @ $${a1.upgradeCost}`;
+                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ $${a1.extraCost}`;
+                    }
+                }
+                
+                if (allocation[2]) {
+                    const a2 = allocation[2];
+                    if (a2.type === 'tshirt-white') {
+                        if (a2.discountQty > 0) g2Status = `${a2.discountQty} free`;
+                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ $${a2.extraCost}`;
+                    } else {
+                        if (a2.discountQty > 0) g2Status = `${a2.discountQty} upgrade @ $${a2.upgradeCost}`;
+                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ $${a2.extraCost}`;
+                    }
+                }
+                
+                document.getElementById('g1-status').textContent = g1Status;
+                document.getElementById('g2-status').textContent = g2Status;
+            }
+            
+            function updateCost() {
+                const g1Qty = getGarmentQuantity(g1SizeInputs);
+                const g2Qty = getGarmentQuantity(g2SizeInputs);
+                const g1Other = parseInt(g1OtherInput.value || 0);
+                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Total = g1Qty + g1Other;
+                const g2Total = g2Qty + g2Other;
+                
+                const baseType1 = garmentType1.value;
+                const baseType2 = garmentType2.value;
+                const color1 = getSelectedColor('garmentColor1');
+                const color2 = getSelectedColor('garmentColor2');
+                
+                const type1 = baseType1 ? getGarmentTypeWithColor(baseType1, color1) : '';
+                const type2 = baseType2 ? getGarmentTypeWithColor(baseType2, color2) : '';
+                
+                let g1Cost = 0;
+                let g2Cost = 0;
+                let inkCost = 0;
+                let otherSizesCost = (g1Other + g2Other) * 3;
+                
+                const garmentOrders = [];
+                
+                if (type1 && g1Total > 0) {
+                    garmentOrders.push({
+                        id: 1,
+                        type: type1,
+                        qty: g1Total,
+                        upgradeCost: type1 === 'tshirt-white' ? 0 : pricing.upgrade[type1],
+                        extraCost: pricing.extra[type1]
+                    });
+                }
+                
+                if (type2 && g2Total > 0 && !garment2Section.classList.contains('hidden')) {
+                    garmentOrders.push({
+                        id: 2,
+                        type: type2,
+                        qty: g2Total,
+                        upgradeCost: type2 === 'tshirt-white' ? 0 : pricing.upgrade[type2],
+                        extraCost: pricing.extra[type2]
+                    });
+                }
+                
+                garmentOrders.sort((a, b) => a.upgradeCost - b.upgradeCost);
+                
+                let remainingDiscount = 15;
+                const allocation = {};
+                
+                garmentOrders.forEach(order => {
+                    const discountQty = Math.min(order.qty, remainingDiscount);
+                    const fullPriceQty = order.qty - discountQty;
+                    
+                    allocation[order.id] = {
+                        type: order.type,
+                        discountQty: discountQty,
+                        fullPriceQty: fullPriceQty,
+                        upgradeCost: order.upgradeCost,
+                        extraCost: order.extraCost,
+                        totalCost: (discountQty * order.upgradeCost) + (fullPriceQty * order.extraCost)
+                    };
+                    
+                    remainingDiscount -= discountQty;
+                });
+                
+                if (allocation[1]) {
+                    g1Cost = allocation[1].totalCost;
+                    const a1 = allocation[1];
+                    if (a1.type === 'tshirt-white') {
+                        document.getElementById('garment1Details').textContent = 
+                            `${a1.discountQty} free + ${a1.fullPriceQty} @ $${a1.extraCost} ea`;
+                    } else {
+                        document.getElementById('garment1Details').textContent = 
+                            `${a1.discountQty} @ $${a1.upgradeCost} + ${a1.fullPriceQty} @ $${a1.extraCost} ea`;
+                    }
+                } else {
+                    document.getElementById('garment1Details').textContent = '';
+                }
+                
+                if (allocation[2]) {
+                    g2Cost = allocation[2].totalCost;
+                    const a2 = allocation[2];
+                    if (a2.type === 'tshirt-white') {
+                        document.getElementById('garment2Details').textContent = 
+                            `${a2.discountQty} free + ${a2.fullPriceQty} @ $${a2.extraCost} ea`;
+                    } else {
+                        document.getElementById('garment2Details').textContent = 
+                            `${a2.discountQty} @ $${a2.upgradeCost} + ${a2.fullPriceQty} @ $${a2.extraCost} ea`;
+                    }
+                } else {
+                    document.getElementById('garment2Details').textContent = '';
+                }
+                
+                // Check for two-color ink on dark garments - NO QUANTITY FILTER
+                const outline1 = getSelectedColor('inkOutline1');
+                const outline2 = getSelectedColor('inkOutline2');
+                
+                const needsInkCharge1 = outline1 && outline1 !== 'None' && 
+                                       color1 !== 'White' && color1 !== 'Ash Gray';
+                const needsInkCharge2 = outline2 && outline2 !== 'None' && 
+                                       color2 !== 'White' && color2 !== 'Ash Gray' && 
+                                       !garment2Section.classList.contains('hidden');
+                
+                if (needsInkCharge1 || needsInkCharge2) {
+                    inkCost = 25;
+                }
+                
+                document.getElementById('garment1Cost').textContent = `$${g1Cost}`;
+                document.getElementById('garment2Cost').textContent = `$${g2Cost}`;
+                document.getElementById('inkCost').textContent = `$${inkCost}`;
+                document.getElementById('otherSizesCost').textContent = `$${otherSizesCost}`;
+                document.getElementById('totalCost').textContent = g1Cost + g2Cost + inkCost + otherSizesCost;
+                
+                if (otherSizesCost > 0) {
+                    document.getElementById('otherSizesCostRow').classList.remove('hidden');
+                } else {
+                    document.getElementById('otherSizesCostRow').classList.add('hidden');
+                }
+                
+                updateQuantityIndicators();
+            }
+            
+            // Event listeners
+            garmentType1.addEventListener('change', function() {
+                updateColorSelection(this, '1');
+                updateCost();
+            });
+            
+            garmentType2.addEventListener('change', function() {
+                updateColorSelection(this, '2');
+                updateCost();
+            });
+            
+            teamNameInput.addEventListener('input', function() {
+                updatePreview('1');
+                if (!garment2Section.classList.contains('hidden')) {
+                    updatePreview('2');
+                }
+            });
+            
+            // Add garment button
+            addGarmentBtn.addEventListener('click', function() {
+                garment2Section.classList.remove('hidden');
+                addGarmentBtn.classList.add('hidden');
+                document.getElementById('garment2CostRow').classList.remove('hidden');
+                document.getElementById('garment2Details').classList.remove('hidden');
+                updateCost();
+            });
+            
+            // Remove garment button
+            removeGarmentBtn.addEventListener('click', function() {
+                garment2Section.classList.add('hidden');
+                addGarmentBtn.classList.remove('hidden');
+                document.getElementById('garment2CostRow').classList.add('hidden');
+                document.getElementById('garment2Details').classList.add('hidden');
+                
+                // Reset garment 2
+                garmentType2.value = '';
+                document.getElementById('colorSelection2').classList.add('hidden');
+                document.getElementById('inkColors2').classList.add('hidden');
+                document.getElementById('preview2').classList.add('hidden');
+                
+                // Reset selections
+                const whiteRadio2 = document.querySelector('input[name="garmentColor2"][value="White"]');
+                const blackRadio2 = document.querySelector('input[name="inkFill2"][value="Black"]');
+                const noneRadio2 = document.querySelector('input[name="inkOutline2"][value="None"]');
+                
+                if (whiteRadio2) whiteRadio2.checked = true;
+                if (blackRadio2) blackRadio2.checked = true;
+                if (noneRadio2) noneRadio2.checked = true;
+                
+                // Reset custom colors
+                customColors.inkFill2 = null;
+                customColors.inkOutline2 = null;
+                
+                g2SizeInputs.forEach(input => input.value = '0');
+                g2OtherInput.value = '0';
+                g2OtherSpecify.value = '';
+                document.getElementById('g2_other_note').style.display = 'none';
+                
+                updateCost();
+            });
+            
+            // Size inputs
+            [...g1SizeInputs, ...g2SizeInputs].forEach(input => {
+                input.addEventListener('input', updateCost);
+            });
+            
+            // Other sizes inputs
+            g1OtherInput.addEventListener('input', function() {
+                updateOtherSizesNote('1');
+                updateCost();
+            });
+            
+            g2OtherInput.addEventListener('input', function() {
+                updateOtherSizesNote('2');
+                updateCost();
+            });
+            
+            // Color box clicks
+            document.addEventListener('click', function(e) {
+                const colorBox = e.target.closest('.color-box');
+                if (!colorBox || colorBox.classList.contains('custom-color')) return;
+                
+                const radio = colorBox.querySelector('input[type="radio"]');
+                if (!radio) return;
+                
+                const name = radio.name;
+                const garmentNum = name.includes('1') ? '1' : '2';
+                
+                // Update selection
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.parentElement.classList.remove('selected');
+                });
+                colorBox.classList.add('selected');
+                radio.checked = true;
+                
+                // Reset custom color box if one exists
+                const customRadio = document.querySelector(`input[name="${name}"][value="custom"]`);
+                if (customRadio && customRadio.parentElement) {
+                    const customBox = customRadio.parentElement;
+                    if (customBox.classList.contains('custom-color')) {
+                        customBox.innerHTML = '+';
+                        customBox.style.background = 'linear-gradient(45deg, #ff0000, #00ff00, #0000ff)';
+                        // Re-create the radio input
+                        const newRadio = document.createElement('input');
+                        newRadio.type = 'radio';
+                        newRadio.name = name;
+                        newRadio.value = 'custom';
+                        customBox.appendChild(newRadio);
+                    }
+                }
+                
+                // Update selected color display
+                updateSelectedColorDisplay(name, radio.value);
+                
+                // Update displays
+                if (name.includes('garmentColor')) {
+                    updateColorPriceNote(garmentNum);
+                }
+                updatePreview(garmentNum);
+                updateInkWarning(garmentNum);
+                updateCost();
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const g1Qty = getGarmentQuantity(g1SizeInputs);
+                const g2Qty = getGarmentQuantity(g2SizeInputs);
+                const g1Other = parseInt(g1OtherInput.value || 0);
+                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Total = g1Qty + g1Other;
+                const g2Total = g2Qty + g2Other;
+                
+                if (g1Total === 0 && g2Total === 0) {
+                    alert('Please enter at least one garment quantity.');
+                    return;
+                }
+                
+                // Build summary
+                const sizeLabels = ['Small', 'Medium', 'Large', 'XL', '2XL', '3XL', '4XL'];
+                
+                let g1Sizes = '';
+                if (g1Qty > 0) {
+                    g1Sizes = g1SizeInputs.map((input, i) => {
+                        const qty = parseInt(input.value || 0);
+                        return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
+                    }).filter(s => s).join('\n');
+                }
+                
+                let g2Sizes = '';
+                if (g2Qty > 0 && !garment2Section.classList.contains('hidden')) {
+                    g2Sizes = g2SizeInputs.map((input, i) => {
+                        const qty = parseInt(input.value || 0);
+                        return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
+                    }).filter(s => s).join('\n');
+                }
+                
+                // Get color values for summary
+                const garmentColor1 = getSelectedColor('garmentColor1');
+                const garmentColor2 = getSelectedColor('garmentColor2');
+                const inkFill1 = getSelectedColor('inkFill1');
+                const inkFill2 = getSelectedColor('inkFill2');
+                const inkOutline1 = getSelectedColor('inkOutline1');
+                const inkOutline2 = getSelectedColor('inkOutline2');
+                
+                const formatColor = (color, name) => {
+                    if (color === 'custom' && customColors[name]) {
+                        return `Custom (${customColors[name]})`;
+                    } else if (color.startsWith('#')) {
+                        return `Custom (${color})`;
+                    }
+                    return color;
+                };
+                
+                const summary = `MLS LEAGUE CHAMPIONS AWARDS ORDER
+================================
+Season Won: ${document.getElementById('seasonWon').value}
+City & Day: ${document.getElementById('cityAndDay').value}
+Team Name: ${document.getElementById('teamName').value}
+
+GARMENT CHOICE 1:
+Type: ${garmentType1.value ? garmentNames[garmentType1.value] : 'None'}
+Color: ${formatColor(garmentColor1, 'garmentColor1')}
+Ink Colors:
+  Fill: ${formatColor(inkFill1, 'inkFill1')}
+  Outline: ${inkOutline1 === 'None' ? 'None (single color)' : formatColor(inkOutline1, 'inkOutline1')}
+Quantity: ${g1Total}
+Sizes:
+${g1Sizes}${g1Other > 0 ? '\n  Other: ' + g1Other + ' units' : ''}${g1OtherSpecify.value ? ' (' + g1OtherSpecify.value + ')' : ''}
+
+${garmentType2.value && !garment2Section.classList.contains('hidden') ? `GARMENT CHOICE 2:
+Type: ${garmentNames[garmentType2.value]}
+Color: ${formatColor(garmentColor2, 'garmentColor2')}
+Ink Colors:
+  Fill: ${formatColor(inkFill2, 'inkFill2')}
+  Outline: ${inkOutline2 === 'None' ? 'None (single color)' : formatColor(inkOutline2, 'inkOutline2')}
+Quantity: ${g2Total}
+Sizes:
+${g2Sizes}${g2Other > 0 ? '\n  Other: ' + g2Other + ' units' : ''}${g2OtherSpecify.value ? ' (' + g2OtherSpecify.value + ')' : ''}` : ''}
+
+TOTAL GARMENTS: ${g1Total + g2Total}
+
+COST BREAKDOWN:
+Garment Choice 1: ${document.getElementById('garment1Cost').textContent.substring(1)}
+${garmentType2.value && g2Total > 0 && !garment2Section.classList.contains('hidden') ? `Garment Choice 2: ${document.getElementById('garment2Cost').textContent.substring(1)}\n` : ''}${parseInt(document.getElementById('inkCost').textContent.substring(1)) > 0 ? `Two-color ink charge: ${document.getElementById('inkCost').textContent.substring(1)}\n` : ''}${parseInt(document.getElementById('otherSizesCost').textContent.substring(1)) > 0 ? `Other sizes upcharge: ${document.getElementById('otherSizesCost').textContent.substring(1)}\n` : ''}
+TOTAL COST: ${document.getElementById('totalCost').textContent}
+
+Order Date: ${new Date().toLocaleDateString()}`;
+                
+                document.getElementById('summaryText').textContent = summary;
+                document.getElementById('summaryModal').style.display = 'block';
+            });
+            
+            // Close modal
+            closeModalBtn.addEventListener('click', function() {
+                document.getElementById('summaryModal').style.display = 'none';
+            });
+            
+            // Initial update
+            updateCost();
+            
+            console.log('Form initialization complete!');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+</body>
+</html>
