@@ -642,7 +642,7 @@
                             <!-- Colors will be added by JavaScript -->
                         </div>
                         <div class="color-price-note" id="colorPriceNote1">
-                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee1"></span> per shirt for colored garments
+                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee1"></span> per garment (first 15) • <span id="extraPrice1"></span> per additional garment
                         </div>
                     </div>
                     
@@ -742,18 +742,13 @@
                         </select>
                     </div>
                     
-                    <div class="garment-upgrade-notice" id="garmentUpgradeNotice2">
-                        <strong>Upgrade Fee Information:</strong>
-                        <span id="upgradeText2"></span>
-                    </div>
-                    
                     <div class="color-selection hidden" id="colorSelection2">
                         <label style="margin-bottom: 6px; display: block;">Garment Color: <span class="selected-color-display" id="selectedGarmentColor2">White</span></label>
                         <div class="color-options" id="colorOptions2">
                             <!-- Colors will be added by JavaScript -->
                         </div>
                         <div class="color-price-note" id="colorPriceNote2">
-                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee2"></span> per shirt for colored garments
+                            <strong>Upgrade Fee:</strong> <span id="colorUpgradeFee2"></span> per garment (first 15) • <span id="extraPrice2"></span> per additional garment
                         </div>
                     </div>
                     
@@ -1205,8 +1200,6 @@
                 const colorSelection = document.getElementById(`colorSelection${garmentNum}`);
                 const inkColors = document.getElementById(`inkColors${garmentNum}`);
                 const preview = document.getElementById(`preview${garmentNum}`);
-                const upgradeNotice = document.getElementById(`garmentUpgradeNotice${garmentNum}`);
-                const upgradeText = document.getElementById(`upgradeText${garmentNum}`);
                 
                 if (typeSelect.value) {
                     colorSelection.classList.remove('hidden');
@@ -1214,32 +1207,10 @@
                     preview.classList.remove('hidden');
                     updateColorPriceNote(garmentNum);
                     updatePreview(garmentNum);
-                    
-                    // Show upgrade notice for non-tshirt garments (only if elements exist)
-                    if (upgradeNotice && upgradeText) {
-                        if (typeSelect.value === 'performance') {
-                            upgradeNotice.style.display = 'block';
-                            upgradeText.textContent = 'Performance T-Shirts have a $12 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $20 each.';
-                        } else if (typeSelect.value === 'longsleeve') {
-                            upgradeNotice.style.display = 'block';
-                            upgradeText.textContent = 'Long Sleeve T-Shirts have a $16 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $22 each.';
-                        } else if (typeSelect.value === 'hoodie') {
-                            upgradeNotice.style.display = 'block';
-                            upgradeText.textContent = 'Hooded Sweatshirts have a $20 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $28 each.';
-                        } else if (typeSelect.value === 'tshirt') {
-                            upgradeNotice.style.display = 'block';
-                            upgradeText.textContent = 'White t-shirts are included free (up to 15). Ash gray t-shirts have a $4 upgrade fee, and colored t-shirts have a $7 upgrade fee. Additional shirts beyond 15 are $12-$15 each.';
-                        } else {
-                            upgradeNotice.style.display = 'none';
-                        }
-                    }
                 } else {
                     colorSelection.classList.add('hidden');
                     inkColors.classList.add('hidden');
                     preview.classList.add('hidden');
-                    if (upgradeNotice) {
-                        upgradeNotice.style.display = 'none';
-                    }
                 }
             }
             
@@ -1248,13 +1219,35 @@
                 const selectedColor = getSelectedColor(`garmentColor${garmentNum}`);
                 const priceNote = document.getElementById(`colorPriceNote${garmentNum}`);
                 const upgradeFee = document.getElementById(`colorUpgradeFee${garmentNum}`);
+                const extraPrice = document.getElementById(`extraPrice${garmentNum}`);
                 
-                if (typeSelect.value === 'tshirt' && selectedColor !== 'White' && selectedColor !== 'Ash Gray') {
+                if (typeSelect.value === 'tshirt') {
+                    if (selectedColor !== 'White' && selectedColor !== 'Ash Gray') {
+                        priceNote.style.display = 'block';
+                        upgradeFee.textContent = '+$7';
+                        extraPrice.textContent = '$15';
+                    } else if (selectedColor === 'Ash Gray') {
+                        priceNote.style.display = 'block';
+                        upgradeFee.textContent = '+$4';
+                        extraPrice.textContent = '$15';
+                    } else {
+                        // White t-shirts
+                        priceNote.style.display = 'block';
+                        upgradeFee.textContent = 'Free';
+                        extraPrice.textContent = '$12';
+                    }
+                } else if (typeSelect.value === 'performance') {
                     priceNote.style.display = 'block';
-                    upgradeFee.textContent = '+$7';
-                } else if (selectedColor === 'Ash Gray' && typeSelect.value === 'tshirt') {
+                    upgradeFee.textContent = '+$12';
+                    extraPrice.textContent = '$20';
+                } else if (typeSelect.value === 'longsleeve') {
                     priceNote.style.display = 'block';
-                    upgradeFee.textContent = '+$4';
+                    upgradeFee.textContent = '+$16';
+                    extraPrice.textContent = '$22';
+                } else if (typeSelect.value === 'hoodie') {
+                    priceNote.style.display = 'block';
+                    upgradeFee.textContent = '+$20';
+                    extraPrice.textContent = '$28';
                 } else {
                     priceNote.style.display = 'none';
                 }
@@ -1706,6 +1699,9 @@
                 };
                 
                 const specialInstructions = document.getElementById('specialInstructions').value;
+                
+                // Calculate other sizes upcharge
+                const otherSizesUpcharge = (g1Other + g2Other) * 3;
                 
                 const summary = `MLS LEAGUE CHAMPIONS AWARDS ORDER
 ================================
