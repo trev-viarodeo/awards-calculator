@@ -144,14 +144,39 @@
             font-weight: normal;
             font-size: 12px;
             margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         
-        .size-input input {
+        .size-input select,
+        .size-input input[type="number"] {
             width: 100%;
             padding: 4px;
             border: 1px solid #ddd;
             border-radius: 3px;
-            font-size: 13px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .size-input select {
+            cursor: pointer;
+        }
+        
+        .size-input input[type="number"] {
+            font-size: 16px; /* Prevents mobile zoom */
+        }
+        
+        .size-input .back-to-select {
+            color: #2196F3;
+            cursor: pointer;
+            font-size: 10px;
+            text-decoration: underline;
+            padding: 0 2px;
+        }
+        
+        .size-input .back-to-select:hover {
+            color: #1976D2;
         }
         
         /* Style number inputs with arrows visible */
@@ -675,35 +700,35 @@
                         <div class="size-grid">
                             <div class="size-input">
                                 <label for="g1_small">Small</label>
-                                <input type="number" id="g1_small" min="0" value="0">
+                                <div class="size-container" data-size="g1_small"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_medium">Medium</label>
-                                <input type="number" id="g1_medium" min="0" value="0">
+                                <div class="size-container" data-size="g1_medium"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_large">Large</label>
-                                <input type="number" id="g1_large" min="0" value="0">
+                                <div class="size-container" data-size="g1_large"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_xl">XL</label>
-                                <input type="number" id="g1_xl" min="0" value="0">
+                                <div class="size-container" data-size="g1_xl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_xxl">2XL</label>
-                                <input type="number" id="g1_xxl" min="0" value="0">
+                                <div class="size-container" data-size="g1_xxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_xxxl">3XL</label>
-                                <input type="number" id="g1_xxxl" min="0" value="0">
+                                <div class="size-container" data-size="g1_xxxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_xxxxl">4XL</label>
-                                <input type="number" id="g1_xxxxl" min="0" value="0">
+                                <div class="size-container" data-size="g1_xxxxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g1_other">Other</label>
-                                <input type="number" id="g1_other" min="0" value="0">
+                                <div class="size-container" data-size="g1_other"></div>
                             </div>
                         </div>
                         
@@ -781,35 +806,35 @@
                         <div class="size-grid">
                             <div class="size-input">
                                 <label for="g2_small">Small</label>
-                                <input type="number" id="g2_small" min="0" value="0">
+                                <div class="size-container" data-size="g2_small"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_medium">Medium</label>
-                                <input type="number" id="g2_medium" min="0" value="0">
+                                <div class="size-container" data-size="g2_medium"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_large">Large</label>
-                                <input type="number" id="g2_large" min="0" value="0">
+                                <div class="size-container" data-size="g2_large"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_xl">XL</label>
-                                <input type="number" id="g2_xl" min="0" value="0">
+                                <div class="size-container" data-size="g2_xl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_xxl">2XL</label>
-                                <input type="number" id="g2_xxl" min="0" value="0">
+                                <div class="size-container" data-size="g2_xxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_xxxl">3XL</label>
-                                <input type="number" id="g2_xxxl" min="0" value="0">
+                                <div class="size-container" data-size="g2_xxxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_xxxxl">4XL</label>
-                                <input type="number" id="g2_xxxxl" min="0" value="0">
+                                <div class="size-container" data-size="g2_xxxxl"></div>
                             </div>
                             <div class="size-input">
                                 <label for="g2_other">Other</label>
-                                <input type="number" id="g2_other" min="0" value="0">
+                                <div class="size-container" data-size="g2_other"></div>
                             </div>
                         </div>
                         
@@ -887,6 +912,9 @@
     (function() {
         'use strict';
         
+        // Store size values
+        const sizeValues = {};
+        
         // Color definitions
         const garmentColors = [
             { name: 'White', value: '#ffffff', isWhite: true },
@@ -952,6 +980,140 @@
             inkOutline1: null,
             inkOutline2: null
         };
+        
+        // Create select dropdown
+        function createSizeSelect(sizeId) {
+            const select = document.createElement('select');
+            select.id = sizeId;
+            select.className = 'size-select';
+            
+            for (let i = 0; i <= 10; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                select.appendChild(option);
+            }
+            
+            const customOption = document.createElement('option');
+            customOption.value = 'custom';
+            customOption.textContent = '11+';
+            select.appendChild(customOption);
+            
+            return select;
+        }
+        
+        // Create number input
+        function createNumberInput(sizeId) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = sizeId;
+            input.className = 'size-input-number';
+            input.min = '0';
+            input.value = sizeValues[sizeId] || '0';
+            
+            return input;
+        }
+        
+        // Initialize size containers
+        function initializeSizeContainers() {
+            document.querySelectorAll('.size-container').forEach(container => {
+                const sizeId = container.getAttribute('data-size');
+                const select = createSizeSelect(sizeId);
+                container.appendChild(select);
+                
+                // Handle select change
+                select.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        // Replace select with input
+                        const input = createNumberInput(sizeId);
+                        const label = container.closest('.size-input').querySelector('label');
+                        
+                        // Add back link
+                        const backLink = document.createElement('span');
+                        backLink.className = 'back-to-select';
+                        backLink.textContent = '≤10';
+                        backLink.addEventListener('click', function() {
+                            // Replace input with select
+                            container.innerHTML = '';
+                            const newSelect = createSizeSelect(sizeId);
+                            container.appendChild(newSelect);
+                            label.innerHTML = label.textContent.split(' ')[0];
+                            sizeValues[sizeId] = 0;
+                            
+                            // Re-add event listener
+                            newSelect.addEventListener('change', function() {
+                                if (this.value === 'custom') {
+                                    handleCustomSelection(sizeId, container);
+                                } else {
+                                    sizeValues[sizeId] = parseInt(this.value);
+                                    updateCost();
+                                }
+                            });
+                            
+                            updateCost();
+                        });
+                        
+                        label.appendChild(backLink);
+                        container.innerHTML = '';
+                        container.appendChild(input);
+                        input.focus();
+                        
+                        input.addEventListener('input', function() {
+                            sizeValues[sizeId] = parseInt(this.value || 0);
+                            updateCost();
+                        });
+                        
+                        input.addEventListener('wheel', function(e) {
+                            e.preventDefault();
+                        });
+                    } else {
+                        sizeValues[sizeId] = parseInt(this.value);
+                        updateCost();
+                    }
+                });
+                
+                function handleCustomSelection(sizeId, container) {
+                    const input = createNumberInput(sizeId);
+                    const label = container.closest('.size-input').querySelector('label');
+                    
+                    const backLink = document.createElement('span');
+                    backLink.className = 'back-to-select';
+                    backLink.textContent = '≤10';
+                    backLink.addEventListener('click', function() {
+                        container.innerHTML = '';
+                        const newSelect = createSizeSelect(sizeId);
+                        container.appendChild(newSelect);
+                        label.innerHTML = label.textContent.split(' ')[0];
+                        sizeValues[sizeId] = 0;
+                        
+                        newSelect.addEventListener('change', function() {
+                            if (this.value === 'custom') {
+                                handleCustomSelection(sizeId, container);
+                            } else {
+                                sizeValues[sizeId] = parseInt(this.value);
+                                updateCost();
+                            }
+                        });
+                        
+                        updateCost();
+                    });
+                    
+                    label.appendChild(backLink);
+                    container.innerHTML = '';
+                    container.appendChild(input);
+                    input.focus();
+                    
+                    input.addEventListener('input', function() {
+                        sizeValues[sizeId] = parseInt(this.value || 0);
+                        updateCost();
+                    });
+                    
+                    input.addEventListener('wheel', function(e) {
+                        e.preventDefault();
+                    });
+                }
+            });
+        }
         
         // Create color box HTML
         function createColorBox(color, name, value, isSelected = false) {
@@ -1123,11 +1285,17 @@
             inkOutlineOptions2.appendChild(createCustomColorPicker('inkOutline2'));
         }
         
+        // Helper function to get size value
+        function getSizeValue(sizeId) {
+            return sizeValues[sizeId] || 0;
+        }
+        
         // Main initialization
         function init() {
             console.log('Initializing form...');
             
             initializeColors();
+            initializeSizeContainers();
             
             const form = document.getElementById('awardsForm');
             const teamNameInput = document.getElementById('teamName');
@@ -1138,21 +1306,11 @@
             const garmentType2 = document.getElementById('garmentType2');
             const closeModalBtn = document.getElementById('closeModalBtn');
             
-            const g1SizeInputs = ['g1_small', 'g1_medium', 'g1_large', 'g1_xl', 'g1_xxl', 'g1_xxxl', 'g1_xxxxl']
-                .map(id => document.getElementById(id));
-            const g2SizeInputs = ['g2_small', 'g2_medium', 'g2_large', 'g2_xl', 'g2_xxl', 'g2_xxxl', 'g2_xxxxl']
-                .map(id => document.getElementById(id));
+            const g1SizeIds = ['g1_small', 'g1_medium', 'g1_large', 'g1_xl', 'g1_xxl', 'g1_xxxl', 'g1_xxxxl'];
+            const g2SizeIds = ['g2_small', 'g2_medium', 'g2_large', 'g2_xl', 'g2_xxl', 'g2_xxxl', 'g2_xxxxl'];
             
-            const g1OtherInput = document.getElementById('g1_other');
-            const g2OtherInput = document.getElementById('g2_other');
             const g1OtherSpecify = document.getElementById('g1_other_specify');
             const g2OtherSpecify = document.getElementById('g2_other_specify');
-            
-            [...g1SizeInputs, ...g2SizeInputs, g1OtherInput, g2OtherInput].forEach(input => {
-                input.addEventListener('wheel', function(e) {
-                    e.preventDefault();
-                });
-            });
             
             function getSelectedColor(name) {
                 const selected = document.querySelector(`input[name="${name}"]:checked`);
@@ -1183,8 +1341,8 @@
                 }
             }
             
-            function getGarmentQuantity(sizeInputs) {
-                return sizeInputs.reduce((sum, input) => sum + parseInt(input.value || 0), 0);
+            function getGarmentQuantity(sizeIds) {
+                return sizeIds.reduce((sum, id) => sum + getSizeValue(id), 0);
             }
             
             function getGarmentTypeWithColor(baseType, color) {
@@ -1304,11 +1462,11 @@
             }
             
             function updateOtherSizesNote(garmentNum) {
-                const otherInput = garmentNum === '1' ? g1OtherInput : g2OtherInput;
+                const otherQty = getSizeValue(garmentNum === '1' ? 'g1_other' : 'g2_other');
                 const noteId = garmentNum === '1' ? 'g1_other_note' : 'g2_other_note';
                 const note = document.getElementById(noteId);
                 
-                if (parseInt(otherInput.value || 0) > 0) {
+                if (otherQty > 0) {
                     note.style.display = 'block';
                 } else {
                     note.style.display = 'none';
@@ -1320,10 +1478,10 @@
             window.updateCost = updateCost;
             
             function updateQuantityIndicators() {
-                const g1Qty = getGarmentQuantity(g1SizeInputs);
-                const g2Qty = getGarmentQuantity(g2SizeInputs);
-                const g1Other = parseInt(g1OtherInput.value || 0);
-                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Qty = getGarmentQuantity(g1SizeIds);
+                const g2Qty = getGarmentQuantity(g2SizeIds);
+                const g1Other = getSizeValue('g1_other');
+                const g2Other = getSizeValue('g2_other');
                 const g1Total = g1Qty + g1Other;
                 const g2Total = g2Qty + g2Other;
                 
@@ -1387,10 +1545,10 @@
                     const a1 = allocation[1];
                     if (a1.type === 'tshirt-white') {
                         if (a1.discountQty > 0) g1Status = `${a1.discountQty} free`;
-                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ $${a1.extraCost}`;
+                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ ${a1.extraCost}`;
                     } else {
-                        if (a1.discountQty > 0) g1Status = `${a1.discountQty} upgrade @ $${a1.upgradeCost}`;
-                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ $${a1.extraCost}`;
+                        if (a1.discountQty > 0) g1Status = `${a1.discountQty} upgrade @ ${a1.upgradeCost}`;
+                        if (a1.fullPriceQty > 0) g1Status += (g1Status ? ', ' : '') + `${a1.fullPriceQty} extra @ ${a1.extraCost}`;
                     }
                 }
                 
@@ -1398,10 +1556,10 @@
                     const a2 = allocation[2];
                     if (a2.type === 'tshirt-white') {
                         if (a2.discountQty > 0) g2Status = `${a2.discountQty} free`;
-                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ $${a2.extraCost}`;
+                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ ${a2.extraCost}`;
                     } else {
-                        if (a2.discountQty > 0) g2Status = `${a2.discountQty} upgrade @ $${a2.upgradeCost}`;
-                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ $${a2.extraCost}`;
+                        if (a2.discountQty > 0) g2Status = `${a2.discountQty} upgrade @ ${a2.upgradeCost}`;
+                        if (a2.fullPriceQty > 0) g2Status += (g2Status ? ', ' : '') + `${a2.fullPriceQty} extra @ ${a2.extraCost}`;
                     }
                 }
                 
@@ -1410,10 +1568,10 @@
             }
             
             function updateCost() {
-                const g1Qty = getGarmentQuantity(g1SizeInputs);
-                const g2Qty = getGarmentQuantity(g2SizeInputs);
-                const g1Other = parseInt(g1OtherInput.value || 0);
-                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Qty = getGarmentQuantity(g1SizeIds);
+                const g2Qty = getGarmentQuantity(g2SizeIds);
+                const g1Other = getSizeValue('g1_other');
+                const g2Other = getSizeValue('g2_other');
                 const g1Total = g1Qty + g1Other;
                 const g2Total = g2Qty + g2Other;
                 
@@ -1477,10 +1635,10 @@
                     const a1 = allocation[1];
                     if (a1.type === 'tshirt-white') {
                         document.getElementById('garment1Details').textContent = 
-                            `${a1.discountQty} free + ${a1.fullPriceQty} @ $${a1.extraCost} ea`;
+                            `${a1.discountQty} free + ${a1.fullPriceQty} @ ${a1.extraCost} ea`;
                     } else {
                         document.getElementById('garment1Details').textContent = 
-                            `${a1.discountQty} @ $${a1.upgradeCost} + ${a1.fullPriceQty} @ $${a1.extraCost} ea`;
+                            `${a1.discountQty} @ ${a1.upgradeCost} + ${a1.fullPriceQty} @ ${a1.extraCost} ea`;
                     }
                 } else {
                     document.getElementById('garment1Details').textContent = '';
@@ -1491,10 +1649,10 @@
                     const a2 = allocation[2];
                     if (a2.type === 'tshirt-white') {
                         document.getElementById('garment2Details').textContent = 
-                            `${a2.discountQty} free + ${a2.fullPriceQty} @ $${a2.extraCost} ea`;
+                            `${a2.discountQty} free + ${a2.fullPriceQty} @ ${a2.extraCost} ea`;
                     } else {
                         document.getElementById('garment2Details').textContent = 
-                            `${a2.discountQty} @ $${a2.upgradeCost} + ${a2.fullPriceQty} @ $${a2.extraCost} ea`;
+                            `${a2.discountQty} @ ${a2.upgradeCost} + ${a2.fullPriceQty} @ ${a2.extraCost} ea`;
                     }
                 } else {
                     document.getElementById('garment2Details').textContent = '';
@@ -1512,6 +1670,8 @@
                 }
                 
                 updateQuantityIndicators();
+                updateOtherSizesNote('1');
+                updateOtherSizesNote('2');
             }
             
             // Event listeners
@@ -1567,27 +1727,72 @@
                 customColors.inkFill2 = null;
                 customColors.inkOutline2 = null;
                 
-                g2SizeInputs.forEach(input => input.value = '0');
-                g2OtherInput.value = '0';
+                // Reset size values and containers
+                g2SizeIds.forEach(id => {
+                    sizeValues[id] = 0;
+                    const container = document.querySelector(`[data-size="${id}"]`);
+                    if (container) {
+                        container.innerHTML = '';
+                        const newSelect = createSizeSelect(id);
+                        container.appendChild(newSelect);
+                        
+                        // Re-add event listener
+                        newSelect.addEventListener('change', function() {
+                            if (this.value === 'custom') {
+                                handleCustomSelection(id, container);
+                            } else {
+                                sizeValues[id] = parseInt(this.value);
+                                updateCost();
+                            }
+                        });
+                        
+                        function handleCustomSelection(sizeId, container) {
+                            const input = createNumberInput(sizeId);
+                            const label = container.closest('.size-input').querySelector('label');
+                            
+                            const backLink = document.createElement('span');
+                            backLink.className = 'back-to-select';
+                            backLink.textContent = '≤10';
+                            backLink.addEventListener('click', function() {
+                                container.innerHTML = '';
+                                const newSelect = createSizeSelect(sizeId);
+                                container.appendChild(newSelect);
+                                label.innerHTML = label.textContent.split(' ')[0];
+                                sizeValues[sizeId] = 0;
+                                
+                                newSelect.addEventListener('change', function() {
+                                    if (this.value === 'custom') {
+                                        handleCustomSelection(sizeId, container);
+                                    } else {
+                                        sizeValues[sizeId] = parseInt(this.value);
+                                        updateCost();
+                                    }
+                                });
+                                
+                                updateCost();
+                            });
+                            
+                            label.appendChild(backLink);
+                            container.innerHTML = '';
+                            container.appendChild(input);
+                            input.focus();
+                            
+                            input.addEventListener('input', function() {
+                                sizeValues[sizeId] = parseInt(this.value || 0);
+                                updateCost();
+                            });
+                            
+                            input.addEventListener('wheel', function(e) {
+                                e.preventDefault();
+                            });
+                        }
+                    }
+                });
+                
+                sizeValues['g2_other'] = 0;
                 g2OtherSpecify.value = '';
                 document.getElementById('g2_other_note').style.display = 'none';
                 
-                updateCost();
-            });
-            
-            // Size inputs
-            [...g1SizeInputs, ...g2SizeInputs].forEach(input => {
-                input.addEventListener('input', updateCost);
-            });
-            
-            // Other sizes inputs
-            g1OtherInput.addEventListener('input', function() {
-                updateOtherSizesNote('1');
-                updateCost();
-            });
-            
-            g2OtherInput.addEventListener('input', function() {
-                updateOtherSizesNote('2');
                 updateCost();
             });
             
@@ -1640,10 +1845,10 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const g1Qty = getGarmentQuantity(g1SizeInputs);
-                const g2Qty = getGarmentQuantity(g2SizeInputs);
-                const g1Other = parseInt(g1OtherInput.value || 0);
-                const g2Other = parseInt(g2OtherInput.value || 0);
+                const g1Qty = getGarmentQuantity(g1SizeIds);
+                const g2Qty = getGarmentQuantity(g2SizeIds);
+                const g1Other = getSizeValue('g1_other');
+                const g2Other = getSizeValue('g2_other');
                 const g1Total = g1Qty + g1Other;
                 const g2Total = g2Qty + g2Other;
                 
@@ -1657,8 +1862,8 @@
                 
                 let g1Sizes = '';
                 if (g1Qty > 0 || g1Other > 0) {
-                    const standardSizes = g1SizeInputs.map((input, i) => {
-                        const qty = parseInt(input.value || 0);
+                    const standardSizes = g1SizeIds.map((id, i) => {
+                        const qty = getSizeValue(id);
                         return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
                     }).filter(s => s).join('\n');
                     
@@ -1670,8 +1875,8 @@
                 
                 let g2Sizes = '';
                 if ((g2Qty > 0 || g2Other > 0) && !garment2Section.classList.contains('hidden')) {
-                    const standardSizes = g2SizeInputs.map((input, i) => {
-                        const qty = parseInt(input.value || 0);
+                    const standardSizes = g2SizeIds.map((id, i) => {
+                        const qty = getSizeValue(id);
                         return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
                     }).filter(s => s).join('\n');
                     
