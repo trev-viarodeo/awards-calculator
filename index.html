@@ -1047,7 +1047,8 @@
             input.id = sizeId;
             input.className = 'size-input-number';
             input.min = '0';
-            input.value = sizeValues[sizeId] || '0';
+            input.value = ''; // Start blank instead of 0
+            input.placeholder = 'Qty';
             
             return input;
         }
@@ -1787,6 +1788,7 @@
                         function handleCustomSelection(sizeId, container) {
                             const input = createNumberInput(sizeId);
                             const label = container.closest('.size-input').querySelector('label');
+                            const originalLabelText = label.childNodes[0].textContent;
                             
                             const backLink = document.createElement('span');
                             backLink.className = 'back-to-select';
@@ -1795,7 +1797,7 @@
                                 container.innerHTML = '';
                                 const newSelect = createSizeSelect(sizeId);
                                 container.appendChild(newSelect);
-                                label.innerHTML = label.textContent.split(' ')[0];
+                                label.innerHTML = originalLabelText;
                                 sizeValues[sizeId] = 0;
                                 
                                 newSelect.addEventListener('change', function() {
