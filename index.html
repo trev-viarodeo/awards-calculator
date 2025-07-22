@@ -71,6 +71,8 @@
             transition: border-color 0.3s;
             -webkit-appearance: none; /* Remove iOS default styling */
             appearance: none;
+            color: #000; /* Force black text color */
+            -webkit-text-fill-color: #000; /* iOS specific */
         }
         
         /* Style select dropdowns consistently */
@@ -81,6 +83,15 @@
             background-position: right 8px center;
             background-size: 20px;
             padding-right: 35px;
+        }
+        
+        /* Force color for all form inputs */
+        input[type="number"],
+        textarea {
+            color: #000;
+            -webkit-text-fill-color: #000;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         input[type="text"]:focus,
@@ -171,6 +182,8 @@
             background-color: white;
             -webkit-appearance: none;
             appearance: none;
+            color: #000;
+            -webkit-text-fill-color: #000;
         }
         
         .size-input select {
@@ -1801,10 +1814,10 @@
                             container.innerHTML = '';
                             container.appendChild(input);
                             
-                            // Don't focus immediately on mobile to prevent keyboard flashing
-                            if (window.innerWidth > 768) {
+                            // Delay focus to prevent keyboard flash
+                            setTimeout(function() {
                                 input.focus();
-                            }
+                            }, 100);
                             
                             input.addEventListener('input', function() {
                                 sizeValues[sizeId] = parseInt(this.value || 0);
