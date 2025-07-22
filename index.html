@@ -1500,9 +1500,9 @@
                     document.getElementById('garment2Details').textContent = '';
                 }
                 
-                document.getElementById('garment1Cost').textContent = `$${g1Cost}`;
-                document.getElementById('garment2Cost').textContent = `$${g2Cost}`;
-                document.getElementById('otherSizesCost').textContent = `$${otherSizesCost}`;
+                document.getElementById('garment1Cost').textContent = `${g1Cost}`;
+                document.getElementById('garment2Cost').textContent = `${g2Cost}`;
+                document.getElementById('otherSizesCost').textContent = `${otherSizesCost}`;
                 document.getElementById('totalCost').textContent = g1Cost + g2Cost + otherSizesCost;
                 
                 if (otherSizesCost > 0) {
@@ -1733,7 +1733,7 @@ ${g2Sizes}
 
 COST BREAKDOWN:
 Garment Choice 1: ${document.getElementById('garment1Cost').textContent}
-${garmentType2.value && g2Total > 0 && !garment2Section.classList.contains('hidden') ? `Garment Choice 2: ${document.getElementById('garment2Cost').textContent}\n` : ''}${parseInt(document.getElementById('otherSizesCost').textContent) > 0 ? `Other sizes upcharge: ${document.getElementById('otherSizesCost').textContent}\n` : ''}
+${garmentType2.value && g2Total > 0 && !garment2Section.classList.contains('hidden') ? `Garment Choice 2: ${document.getElementById('garment2Cost').textContent}\n` : ''}${otherSizesUpcharge > 0 ? `Other sizes upcharge: ${otherSizesUpcharge}\n` : ''}
 TOTAL COST: ${document.getElementById('totalCost').textContent}
 
 ${specialInstructions ? `SPECIAL INSTRUCTIONS:\n${specialInstructions}\n\n` : ''}Order Date: ${new Date().toLocaleDateString()}`;
