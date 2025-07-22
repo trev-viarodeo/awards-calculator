@@ -1689,6 +1689,9 @@
                 const inkOutline1 = getSelectedColor('inkOutline1');
                 const inkOutline2 = getSelectedColor('inkOutline2');
                 
+                // Calculate other sizes upcharge
+                const otherSizesUpcharge = (g1Other + g2Other) * 3;
+                
                 const formatColor = (color, name) => {
                     if (color === 'custom' && customColors[name]) {
                         return `Custom (${customColors[name]})`;
@@ -1699,9 +1702,6 @@
                 };
                 
                 const specialInstructions = document.getElementById('specialInstructions').value;
-                
-                // Calculate other sizes upcharge
-                const otherSizesUpcharge = (g1Other + g2Other) * 3;
                 
                 const summary = `MLS LEAGUE CHAMPIONS AWARDS ORDER
 ================================
