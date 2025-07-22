@@ -207,11 +207,77 @@
             color: #1976D2;
         }
         
-        /* Style number inputs with arrows visible */
-        input[type="number"] {
-            -moz-appearance: textfield;
-            appearance: auto;
-            -webkit-appearance: auto;
+        /* Style placeholders - comprehensive browser support */
+        input::placeholder,
+        textarea::placeholder {
+            color: #999 !important;
+            opacity: 1 !important; /* Firefox */
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+            color: #999 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        /* Ensure placeholder color works on all browsers */
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+            color: #999 !important;
+            opacity: 1 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input:-ms-input-placeholder,
+        textarea:-ms-input-placeholder {
+            color: #999 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input:-moz-placeholder,
+        textarea:-moz-placeholder {
+            color: #999 !important;
+            opacity: 1 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        /* Specifically target number inputs for better support */
+        input[type="number"]::placeholder {
+            color: #999 !important;
+            opacity: 1 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input[type="number"]::-webkit-input-placeholder {
+            color: #999 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input[type="number"]::-moz-placeholder {
+            color: #999 !important;
+            opacity: 1 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        input[type="number"]:-ms-input-placeholder {
+            color: #999 !important;
+            font-style: italic !important;
+            font-weight: normal !important;
+        }
+        
+        /* Also style the webkit autofill to prevent issues */
+        input:-webkit-autofill::placeholder {
+            color: #999 !important;
+            font-style: italic !important;
         }
         
         .add-garment-btn {
@@ -1053,6 +1119,19 @@
             return input;
         }
         
+        // Get original label text from for attribute
+        function getOriginalLabelText(labelFor) {
+            if (labelFor.includes('small')) return 'Small';
+            else if (labelFor.includes('medium')) return 'Medium';
+            else if (labelFor.includes('large') && !labelFor.includes('xl')) return 'Large';
+            else if (labelFor.includes('xl') && !labelFor.includes('xxl')) return 'XL';
+            else if (labelFor.includes('xxl') && !labelFor.includes('xxxl')) return '2XL';
+            else if (labelFor.includes('xxxl') && !labelFor.includes('xxxxl')) return '3XL';
+            else if (labelFor.includes('xxxxl')) return '4XL';
+            else if (labelFor.includes('other')) return 'Other';
+            return 'Size';
+        }
+        
         // Initialize size containers
         function initializeSizeContainers() {
             document.querySelectorAll('.size-container').forEach(container => {
@@ -1063,48 +1142,7 @@
                 // Handle select change
                 select.addEventListener('change', function() {
                     if (this.value === 'custom') {
-                        // Replace select with input
-                        const input = createNumberInput(sizeId);
-                        const label = container.closest('.size-input').querySelector('label');
-                        
-                        // Add back link
-                        const backLink = document.createElement('span');
-                        backLink.className = 'back-to-select';
-                        backLink.textContent = '≤10';
-                        backLink.addEventListener('click', function() {
-                            // Replace input with select
-                            container.innerHTML = '';
-                            const newSelect = createSizeSelect(sizeId);
-                            container.appendChild(newSelect);
-                            label.innerHTML = label.textContent.split(' ')[0];
-                            sizeValues[sizeId] = 0;
-                            
-                            // Re-add event listener
-                            newSelect.addEventListener('change', function() {
-                                if (this.value === 'custom') {
-                                    handleCustomSelection(sizeId, container);
-                                } else {
-                                    sizeValues[sizeId] = parseInt(this.value);
-                                    updateCost();
-                                }
-                            });
-                            
-                            updateCost();
-                        });
-                        
-                        label.appendChild(backLink);
-                        container.innerHTML = '';
-                        container.appendChild(input);
-                        input.focus();
-                        
-                        input.addEventListener('input', function() {
-                            sizeValues[sizeId] = parseInt(this.value || 0);
-                            updateCost();
-                        });
-                        
-                        input.addEventListener('wheel', function(e) {
-                            e.preventDefault();
-                        });
+                        handleCustomSelection(sizeId, container);
                     } else {
                         sizeValues[sizeId] = parseInt(this.value);
                         updateCost();
@@ -1114,6 +1152,8 @@
                 function handleCustomSelection(sizeId, container) {
                     const input = createNumberInput(sizeId);
                     const label = container.closest('.size-input').querySelector('label');
+                    const labelFor = label.getAttribute('for');
+                    const originalLabelText = getOriginalLabelText(labelFor);
                     
                     const backLink = document.createElement('span');
                     backLink.className = 'back-to-select';
@@ -1122,7 +1162,7 @@
                         container.innerHTML = '';
                         const newSelect = createSizeSelect(sizeId);
                         container.appendChild(newSelect);
-                        label.innerHTML = label.textContent.split(' ')[0];
+                        label.innerHTML = originalLabelText;
                         sizeValues[sizeId] = 0;
                         
                         newSelect.addEventListener('change', function() {
@@ -1137,6 +1177,7 @@
                         updateCost();
                     });
                     
+                    label.innerHTML = originalLabelText + ' ';
                     label.appendChild(backLink);
                     container.innerHTML = '';
                     container.appendChild(input);
@@ -1788,7 +1829,8 @@
                         function handleCustomSelection(sizeId, container) {
                             const input = createNumberInput(sizeId);
                             const label = container.closest('.size-input').querySelector('label');
-                            const originalLabelText = label.childNodes[0].textContent;
+                            const labelFor = label.getAttribute('for');
+                            const originalLabelText = getOriginalLabelText(labelFor);
                             
                             const backLink = document.createElement('span');
                             backLink.className = 'back-to-select';
@@ -1812,6 +1854,7 @@
                                 updateCost();
                             });
                             
+                            label.innerHTML = originalLabelText + ' ';
                             label.appendChild(backLink);
                             container.innerHTML = '';
                             container.appendChild(input);
