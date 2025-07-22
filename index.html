@@ -596,7 +596,7 @@
                 </div>
                 
                 <div class="info">
-                    <strong>Note:</strong> You can select up to 2 different garment types/colors. White and ash gray garments include 2 ink colors. For 2 colors on other garments, add $25.
+                    <strong>Note:</strong> You can select up to 2 different garment types/colors. White and ash gray garments include 2 ink colors at no extra charge.
                 </div>
                 
                 <!-- Garment Choice 1 -->
@@ -646,9 +646,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="warning" id="inkWarning1" style="display: none; margin-top: 8px;">
-                            <strong>Note:</strong> Two-color ink on colored garments adds $25 to your order.
-                        </div>
+
                     </div>
                     
                     <div class="visual-preview hidden" id="preview1">
@@ -754,9 +752,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="warning" id="inkWarning2" style="display: none; margin-top: 8px;">
-                            <strong>Note:</strong> Two-color ink on colored garments adds $25 to your order.
-                        </div>
+
                     </div>
                     
                     <div class="visual-preview hidden" id="preview2">
@@ -809,6 +805,12 @@
                     </div>
                 </div>
                 
+                <!-- Special Instructions Section -->
+                <div class="form-group" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 6px;">
+                    <label for="specialInstructions" style="margin-bottom: 8px;">Special Instructions or Requests (optional):</label>
+                    <textarea id="specialInstructions" name="specialInstructions" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical;" placeholder="Enter any special instructions, requests, or notes about your order here..."></textarea>
+                </div>
+                
                 <div class="submit-section">
                     <button type="submit" class="submit-btn">Generate Order Summary</button>
                 </div>
@@ -829,11 +831,6 @@
                     <span id="garment2Cost">$0</span>
                 </div>
                 <div id="garment2Details" class="cost-detail hidden"></div>
-                
-                <div class="cost-item">
-                    <span>Two-color ink on dark:</span>
-                    <span id="inkCost">$0</span>
-                </div>
                 
                 <div class="cost-item hidden" id="otherSizesCostRow">
                     <span>Other sizes upcharge:</span>
@@ -1191,7 +1188,6 @@
                     preview.classList.remove('hidden');
                     updateColorPriceNote(garmentNum);
                     updatePreview(garmentNum);
-                    updateInkWarning(garmentNum);
                 } else {
                     colorSelection.classList.add('hidden');
                     inkColors.classList.add('hidden');
@@ -1266,18 +1262,6 @@
                 }
             }
             
-            function updateInkWarning(garmentNum) {
-                const garmentColor = getSelectedColor(`garmentColor${garmentNum}`);
-                const outlineColor = getSelectedColor(`inkOutline${garmentNum}`);
-                const warning = document.getElementById(`inkWarning${garmentNum}`);
-                
-                if (outlineColor && outlineColor !== 'None' && garmentColor !== 'White' && garmentColor !== 'Ash Gray') {
-                    warning.style.display = 'block';
-                } else {
-                    warning.style.display = 'none';
-                }
-            }
-            
             function updateOtherSizesNote(garmentNum) {
                 const otherInput = garmentNum === '1' ? g1OtherInput : g2OtherInput;
                 const noteId = garmentNum === '1' ? 'g1_other_note' : 'g2_other_note';
@@ -1291,7 +1275,6 @@
             }
             
             window.updatePreview = updatePreview;
-            window.updateInkWarning = updateInkWarning;
             window.updateSelectedColorDisplay = updateSelectedColorDisplay;
             window.updateCost = updateCost;
             
@@ -1403,7 +1386,6 @@
                 
                 let g1Cost = 0;
                 let g2Cost = 0;
-                let inkCost = 0;
                 let otherSizesCost = (g1Other + g2Other) * 3;
                 
                 const garmentOrders = [];
@@ -1477,25 +1459,10 @@
                     document.getElementById('garment2Details').textContent = '';
                 }
                 
-                // Check for two-color ink on dark garments - NO QUANTITY FILTER
-                const outline1 = getSelectedColor('inkOutline1');
-                const outline2 = getSelectedColor('inkOutline2');
-                
-                const needsInkCharge1 = outline1 && outline1 !== 'None' && 
-                                       color1 !== 'White' && color1 !== 'Ash Gray';
-                const needsInkCharge2 = outline2 && outline2 !== 'None' && 
-                                       color2 !== 'White' && color2 !== 'Ash Gray' && 
-                                       !garment2Section.classList.contains('hidden');
-                
-                if (needsInkCharge1 || needsInkCharge2) {
-                    inkCost = 25;
-                }
-                
-                document.getElementById('garment1Cost').textContent = `$${g1Cost}`;
-                document.getElementById('garment2Cost').textContent = `$${g2Cost}`;
-                document.getElementById('inkCost').textContent = `$${inkCost}`;
-                document.getElementById('otherSizesCost').textContent = `$${otherSizesCost}`;
-                document.getElementById('totalCost').textContent = g1Cost + g2Cost + inkCost + otherSizesCost;
+                document.getElementById('garment1Cost').textContent = `${g1Cost}`;
+                document.getElementById('garment2Cost').textContent = `${g2Cost}`;
+                document.getElementById('otherSizesCost').textContent = `${otherSizesCost}`;
+                document.getElementById('totalCost').textContent = g1Cost + g2Cost + otherSizesCost;
                 
                 if (otherSizesCost > 0) {
                     document.getElementById('otherSizesCostRow').classList.remove('hidden');
@@ -1625,7 +1592,6 @@
                     updateColorPriceNote(garmentNum);
                 }
                 updatePreview(garmentNum);
-                updateInkWarning(garmentNum);
                 updateCost();
             });
             
