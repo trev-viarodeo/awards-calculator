@@ -613,7 +613,7 @@
                         <label for="garmentType1">Garment Type:</label>
                         <select id="garmentType1" name="garmentType1" required>
                             <option value="">Select Garment Type</option>
-                            <option value="tshirt">Short Sleeve T-Shirts (FREE-$7 upgrade)</option>
+                            <option value="tshirt">Short Sleeve T-Shirts</option>
                             <option value="performance">Performance Fabric T-Shirts</option>
                             <option value="longsleeve">Long Sleeve T-Shirts</option>
                             <option value="hoodie">Hooded Sweatshirts</option>
@@ -1051,7 +1051,6 @@
                 
                 const garmentNum = name.includes('1') ? '1' : '2';
                 updatePreview(garmentNum);
-                updateInkWarning(garmentNum);
                 updateCost();
                 
                 picker.remove();
@@ -1459,9 +1458,9 @@
                     document.getElementById('garment2Details').textContent = '';
                 }
                 
-                document.getElementById('garment1Cost').textContent = `${g1Cost}`;
-                document.getElementById('garment2Cost').textContent = `${g2Cost}`;
-                document.getElementById('otherSizesCost').textContent = `${otherSizesCost}`;
+                document.getElementById('garment1Cost').textContent = `$${g1Cost}`;
+                document.getElementById('garment2Cost').textContent = `$${g2Cost}`;
+                document.getElementById('otherSizesCost').textContent = `$${otherSizesCost}`;
                 document.getElementById('totalCost').textContent = g1Cost + g2Cost + otherSizesCost;
                 
                 if (otherSizesCost > 0) {
@@ -1647,6 +1646,8 @@
                     return color;
                 };
                 
+                const specialInstructions = document.getElementById('specialInstructions').value;
+                
                 const summary = `MLS LEAGUE CHAMPIONS AWARDS ORDER
 ================================
 Season Won: ${document.getElementById('seasonWon').value}
@@ -1671,16 +1672,16 @@ Ink Colors:
   Outline: ${inkOutline2 === 'None' ? 'None (single color)' : formatColor(inkOutline2, 'inkOutline2')}
 Quantity: ${g2Total}
 Sizes:
-${g2Sizes}${g2Other > 0 ? '\n  Other: ' + g2Other + ' units' : ''}${g2OtherSpecify.value ? ' (' + g2OtherSpecify.value + ')' : ''}` : ''}
+${g2Sizes}${g2Other > 0 ? '\n  Other: ' + g2Other + ' units' : ''}${g2OtherSpecify.value ? ' (' + g2OtherSpecify.value + ')' : ''}
 
-TOTAL GARMENTS: ${g1Total + g2Total}
+` : ''}TOTAL GARMENTS: ${g1Total + g2Total}
 
 COST BREAKDOWN:
-Garment Choice 1: ${document.getElementById('garment1Cost').textContent.substring(1)}
-${garmentType2.value && g2Total > 0 && !garment2Section.classList.contains('hidden') ? `Garment Choice 2: ${document.getElementById('garment2Cost').textContent.substring(1)}\n` : ''}${parseInt(document.getElementById('inkCost').textContent.substring(1)) > 0 ? `Two-color ink charge: ${document.getElementById('inkCost').textContent.substring(1)}\n` : ''}${parseInt(document.getElementById('otherSizesCost').textContent.substring(1)) > 0 ? `Other sizes upcharge: ${document.getElementById('otherSizesCost').textContent.substring(1)}\n` : ''}
+Garment Choice 1: ${document.getElementById('garment1Cost').textContent}
+${garmentType2.value && g2Total > 0 && !garment2Section.classList.contains('hidden') ? `Garment Choice 2: ${document.getElementById('garment2Cost').textContent}\n` : ''}${parseInt(document.getElementById('otherSizesCost').textContent) > 0 ? `Other sizes upcharge: ${document.getElementById('otherSizesCost').textContent}\n` : ''}
 TOTAL COST: ${document.getElementById('totalCost').textContent}
 
-Order Date: ${new Date().toLocaleDateString()}`;
+${specialInstructions ? `SPECIAL INSTRUCTIONS:\n${specialInstructions}\n\n` : ''}Order Date: ${new Date().toLocaleDateString()}`;
                 
                 document.getElementById('summaryText').textContent = summary;
                 document.getElementById('summaryModal').style.display = 'block';
