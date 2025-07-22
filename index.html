@@ -326,7 +326,7 @@
             position: sticky;
             top: 10px;
             height: fit-content;
-            width: 250px;
+            width: 320px;
             flex-shrink: 0;
         }
         
@@ -596,7 +596,7 @@
                 </div>
                 
                 <div class="info">
-                    <strong>Note:</strong> You can select up to 2 different garment types/colors. MLS gives out 15 free white T's OR 15 garments at the lower upgrade price. <i>If you get more than 15 garments total, you have to pay full price to the printer for anything past 15</i>
+                    <strong>Note:</strong> You can select up to 2 different garment types/colors. White and ash gray garments include 2 ink colors at no extra charge.
                 </div>
                 
                 <!-- Garment Choice 1 -->
@@ -1000,10 +1000,14 @@
             `;
             
             const rect = triggerElement.getBoundingClientRect();
-            picker.style.left = Math.min(rect.left, window.innerWidth - 200) + 'px';
-            picker.style.top = (rect.bottom + 5) + 'px';
+            const containerRect = triggerElement.closest('.garment-section').getBoundingClientRect();
             
-            document.body.appendChild(picker);
+            picker.style.position = 'absolute';
+            picker.style.left = (rect.left - containerRect.left) + 'px';
+            picker.style.top = (rect.bottom - containerRect.top + 5) + 'px';
+            
+            triggerElement.closest('.garment-section').style.position = 'relative';
+            triggerElement.closest('.garment-section').appendChild(picker);
             
             const colorInput = picker.querySelector('#colorPickerInput');
             const hexInput = picker.querySelector('#colorHexInput');
@@ -1614,19 +1618,29 @@
                 const sizeLabels = ['Small', 'Medium', 'Large', 'XL', '2XL', '3XL', '4XL'];
                 
                 let g1Sizes = '';
-                if (g1Qty > 0) {
-                    g1Sizes = g1SizeInputs.map((input, i) => {
+                if (g1Qty > 0 || g1Other > 0) {
+                    const standardSizes = g1SizeInputs.map((input, i) => {
                         const qty = parseInt(input.value || 0);
                         return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
                     }).filter(s => s).join('\n');
+                    
+                    const otherSizeText = g1Other > 0 ? 
+                        `  ${g1OtherSpecify.value ? `Other/${g1OtherSpecify.value}` : 'Other'}: ${g1Other}` : '';
+                    
+                    g1Sizes = standardSizes + (standardSizes && otherSizeText ? '\n' : '') + otherSizeText;
                 }
                 
                 let g2Sizes = '';
-                if (g2Qty > 0 && !garment2Section.classList.contains('hidden')) {
-                    g2Sizes = g2SizeInputs.map((input, i) => {
+                if ((g2Qty > 0 || g2Other > 0) && !garment2Section.classList.contains('hidden')) {
+                    const standardSizes = g2SizeInputs.map((input, i) => {
                         const qty = parseInt(input.value || 0);
                         return qty > 0 ? `  ${sizeLabels[i]}: ${qty}` : '';
                     }).filter(s => s).join('\n');
+                    
+                    const otherSizeText = g2Other > 0 ? 
+                        `  ${g2OtherSpecify.value ? `Other/${g2OtherSpecify.value}` : 'Other'}: ${g2Other}` : '';
+                    
+                    g2Sizes = standardSizes + (standardSizes && otherSizeText ? '\n' : '') + otherSizeText;
                 }
                 
                 // Get color values for summary
