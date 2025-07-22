@@ -253,6 +253,22 @@
             font-weight: normal;
         }
         
+        .garment-upgrade-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .garment-upgrade-notice strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
         .color-price-note {
             margin-top: 10px;
             font-size: 11px;
@@ -609,16 +625,16 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="garmentType1">Garment Type:</label>
-                        <select id="garmentType1" name="garmentType1" required>
-                            <option value="">Select Garment Type</option>
-                            <option value="tshirt">Short Sleeve T-Shirts</option>
-                            <option value="performance">Performance Fabric T-Shirts</option>
-                            <option value="longsleeve">Long Sleeve T-Shirts</option>
-                            <option value="hoodie">Hooded Sweatshirts</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="garmentType1">Garment Type:</label>
+                    <select id="garmentType1" name="garmentType1" required>
+                        <option value="">Select Garment Type</option>
+                        <option value="tshirt">Short Sleeve T-Shirts</option>
+                        <option value="performance">Performance Fabric T-Shirts (+$12 upgrade)</option>
+                        <option value="longsleeve">Long Sleeve T-Shirts (+$16 upgrade)</option>
+                        <option value="hoodie">Hooded Sweatshirts (+$20 upgrade)</option>
+                    </select>
+                </div>
                     
                     <div class="color-selection hidden" id="colorSelection1">
                         <label style="margin-bottom: 6px; display: block;">Garment Color: <span class="selected-color-display" id="selectedGarmentColor1">White</span></label>
@@ -720,10 +736,15 @@
                         <select id="garmentType2" name="garmentType2">
                             <option value="">Select Garment Type</option>
                             <option value="tshirt">Short Sleeve T-Shirts</option>
-                            <option value="performance">Performance Fabric T-Shirts</option>
-                            <option value="longsleeve">Long Sleeve T-Shirts</option>
-                            <option value="hoodie">Hooded Sweatshirts</option>
+                            <option value="performance">Performance Fabric T-Shirts (+$12 upgrade)</option>
+                            <option value="longsleeve">Long Sleeve T-Shirts (+$16 upgrade)</option>
+                            <option value="hoodie">Hooded Sweatshirts (+$20 upgrade)</option>
                         </select>
+                    </div>
+                    
+                    <div class="garment-upgrade-notice" id="garmentUpgradeNotice2">
+                        <strong>Upgrade Fee Information:</strong>
+                        <span id="upgradeText2"></span>
                     </div>
                     
                     <div class="color-selection hidden" id="colorSelection2">
@@ -1184,6 +1205,8 @@
                 const colorSelection = document.getElementById(`colorSelection${garmentNum}`);
                 const inkColors = document.getElementById(`inkColors${garmentNum}`);
                 const preview = document.getElementById(`preview${garmentNum}`);
+                const upgradeNotice = document.getElementById(`garmentUpgradeNotice${garmentNum}`);
+                const upgradeText = document.getElementById(`upgradeText${garmentNum}`);
                 
                 if (typeSelect.value) {
                     colorSelection.classList.remove('hidden');
@@ -1191,10 +1214,32 @@
                     preview.classList.remove('hidden');
                     updateColorPriceNote(garmentNum);
                     updatePreview(garmentNum);
+                    
+                    // Show upgrade notice for non-tshirt garments (only if elements exist)
+                    if (upgradeNotice && upgradeText) {
+                        if (typeSelect.value === 'performance') {
+                            upgradeNotice.style.display = 'block';
+                            upgradeText.textContent = 'Performance T-Shirts have a $12 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $20 each.';
+                        } else if (typeSelect.value === 'longsleeve') {
+                            upgradeNotice.style.display = 'block';
+                            upgradeText.textContent = 'Long Sleeve T-Shirts have a $16 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $22 each.';
+                        } else if (typeSelect.value === 'hoodie') {
+                            upgradeNotice.style.display = 'block';
+                            upgradeText.textContent = 'Hooded Sweatshirts have a $20 upgrade fee per shirt for the first 15 shirts. Any additional shirts are $28 each.';
+                        } else if (typeSelect.value === 'tshirt') {
+                            upgradeNotice.style.display = 'block';
+                            upgradeText.textContent = 'White t-shirts are included free (up to 15). Ash gray t-shirts have a $4 upgrade fee, and colored t-shirts have a $7 upgrade fee. Additional shirts beyond 15 are $12-$15 each.';
+                        } else {
+                            upgradeNotice.style.display = 'none';
+                        }
+                    }
                 } else {
                     colorSelection.classList.add('hidden');
                     inkColors.classList.add('hidden');
                     preview.classList.add('hidden');
+                    if (upgradeNotice) {
+                        upgradeNotice.style.display = 'none';
+                    }
                 }
             }
             
