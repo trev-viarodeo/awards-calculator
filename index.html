@@ -1676,7 +1676,7 @@ Ink Colors:
   Outline: ${inkOutline1 === 'None' ? 'None (single color)' : formatColor(inkOutline1, 'inkOutline1')}
 Quantity: ${g1Total}
 Sizes:
-${g1Sizes}${g1Other > 0 ? '\n  Other: ' + g1Other + ' units' : ''}${g1OtherSpecify.value ? ' (' + g1OtherSpecify.value + ')' : ''}
+${g1Sizes}
 
 ${garmentType2.value && !garment2Section.classList.contains('hidden') ? `GARMENT CHOICE 2:
 Type: ${garmentNames[garmentType2.value]}
@@ -1686,7 +1686,7 @@ Ink Colors:
   Outline: ${inkOutline2 === 'None' ? 'None (single color)' : formatColor(inkOutline2, 'inkOutline2')}
 Quantity: ${g2Total}
 Sizes:
-${g2Sizes}${g2Other > 0 ? '\n  Other: ' + g2Other + ' units' : ''}${g2OtherSpecify.value ? ' (' + g2OtherSpecify.value + ')' : ''}
+${g2Sizes}
 
 ` : ''}TOTAL GARMENTS: ${g1Total + g2Total}
 
