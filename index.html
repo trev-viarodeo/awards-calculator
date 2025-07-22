@@ -67,8 +67,20 @@
             padding: 6px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px; /* Prevents mobile zoom */
             transition: border-color 0.3s;
+            -webkit-appearance: none; /* Remove iOS default styling */
+            appearance: none;
+        }
+        
+        /* Style select dropdowns consistently */
+        select {
+            background-color: white;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 20px;
+            padding-right: 35px;
         }
         
         input[type="text"]:focus,
@@ -155,16 +167,19 @@
             padding: 4px;
             border: 1px solid #ddd;
             border-radius: 3px;
-            font-size: 14px;
+            font-size: 16px; /* Consistent with other inputs */
             background-color: white;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         .size-input select {
             cursor: pointer;
-        }
-        
-        .size-input input[type="number"] {
-            font-size: 16px; /* Prevents mobile zoom */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            background-size: 16px;
+            padding-right: 25px;
         }
         
         .size-input .back-to-select {
@@ -462,6 +477,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.5);
             z-index: 1000;
+            overflow-y: auto; /* Allow modal to scroll */
         }
         
         .summary-content {
@@ -471,8 +487,15 @@
             width: 90%;
             max-width: 600px;
             border-radius: 8px;
-            max-height: 85vh;
-            overflow-y: auto;
+            position: relative;
+            margin-bottom: 30px; /* Add bottom margin for mobile */
+        }
+        
+        /* Prevent body scroll when modal is open */
+        body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
         
         .close-btn {
@@ -581,8 +604,10 @@
             padding: 6px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px; /* Consistent font size */
             margin-top: 6px;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         .other-sizes-note {
@@ -1775,7 +1800,11 @@
                             label.appendChild(backLink);
                             container.innerHTML = '';
                             container.appendChild(input);
-                            input.focus();
+                            
+                            // Don't focus immediately on mobile to prevent keyboard flashing
+                            if (window.innerWidth > 768) {
+                                input.focus();
+                            }
                             
                             input.addEventListener('input', function() {
                                 sizeValues[sizeId] = parseInt(this.value || 0);
@@ -1945,11 +1974,35 @@ ${specialInstructions ? `SPECIAL INSTRUCTIONS:\n${specialInstructions}\n\n` : ''
                 
                 document.getElementById('summaryText').textContent = summary;
                 document.getElementById('summaryModal').style.display = 'block';
+                document.body.classList.add('modal-open');
+                
+                // Store current scroll position
+                const scrollY = window.scrollY;
+                document.body.style.top = `-${scrollY}px`;
             });
             
             // Close modal
             closeModalBtn.addEventListener('click', function() {
                 document.getElementById('summaryModal').style.display = 'none';
+                document.body.classList.remove('modal-open');
+                
+                // Restore scroll position
+                const scrollY = document.body.style.top;
+                document.body.style.top = '';
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('summaryModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    document.getElementById('summaryModal').style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                    
+                    // Restore scroll position
+                    const scrollY = document.body.style.top;
+                    document.body.style.top = '';
+                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                }
             });
             
             // Initial update
