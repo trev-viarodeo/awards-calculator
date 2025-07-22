@@ -1814,10 +1814,7 @@
                             container.innerHTML = '';
                             container.appendChild(input);
                             
-                            // Delay focus to prevent keyboard flash
-                            setTimeout(function() {
-                                input.focus();
-                            }, 100);
+                            // Don't auto-focus - let user tap to open keyboard
                             
                             input.addEventListener('input', function() {
                                 sizeValues[sizeId] = parseInt(this.value || 0);
