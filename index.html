@@ -1019,18 +1019,235 @@
         // Store size values
         const sizeValues = {};
         
-        // Color definitions
-        const garmentColors = [
-            { name: 'White', value: '#ffffff', isWhite: true },
-            { name: 'Ash Gray', value: '#d1d5db' },
-            { name: 'Black', value: '#000000' },
-            { name: 'Navy Blue', value: '#1e3a8a' },
-            { name: 'Red', value: '#dc2626' },
-            { name: 'Dodger Blue', value: '#1e90ff' },
-            { name: 'Dark Gray', value: '#4b5563' },
-            { name: 'Maroon', value: '#7f1d1d' },
-            { name: 'Forest Green', value: '#14532d' }
-        ];
+        // Heather texture generation function
+        function generateHeather(baseColor, width = 256, height = 256) {
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+
+            // Parse base color to RGB
+            const hex = baseColor.replace("#", "");
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+
+            const imageData = ctx.createImageData(width, height);
+
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                let variation;
+                // 75% lighter flecks, 25% darker flecks
+                if (Math.random() < 0.75) {
+                    variation = Math.random() * 30;    // lighten by up to +30
+                } else {
+                    variation = -(Math.random() * 10); // darken by up to -10
+                }
+
+                imageData.data[i]     = Math.min(Math.max(r + variation, 0), 255);
+                imageData.data[i + 1] = Math.min(Math.max(g + variation, 0), 255);
+                imageData.data[i + 2] = Math.min(Math.max(b + variation, 0), 255);
+                imageData.data[i + 3] = 255; // alpha
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+            return canvas.toDataURL();
+        }
+        
+        // Color definitions by garment type from CSV
+        const garmentColorsByType = {
+            tshirt: [
+                { name: 'Aquatic Blue', value: '#4c9fc8', isHeather: false },
+                { name: 'Ash', value: '#dbdbdb', isHeather: true },
+                { name: 'Athletic Heather', value: '#97999b', isHeather: true },
+                { name: 'Athletic Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Brown', value: '#5e4b3c', isHeather: false },
+                { name: 'Candy Pink', value: '#f8a3bc', isHeather: false },
+                { name: 'Cardinal', value: '#7e2d40', isHeather: false },
+                { name: 'Carolina Blue', value: '#6787b7', isHeather: false },
+                { name: 'Charcoal', value: '#53565a', isHeather: false },
+                { name: 'Colonial Blue', value: '#36749d', isHeather: false },
+                { name: 'Coral', value: '#d95a60', isHeather: false },
+                { name: 'Coyote Brown', value: '#755642', isHeather: false },
+                { name: 'Daisy', value: '#e4ca47', isHeather: false },
+                { name: 'Dark Chocolate Brown', value: '#453639', isHeather: false },
+                { name: 'Dark Green', value: '#225e3a', isHeather: false },
+                { name: 'Dark Steel', value: '#4f5b66', isHeather: false },
+                { name: 'Deep Berry', value: '#823d5f', isHeather: false },
+                { name: 'Dill Green', value: '#7aa14f', isHeather: false },
+                { name: 'Electric Blue', value: '#2d82bc', isHeather: false },
+                { name: 'Eggplant', value: '#483757', isHeather: false },
+                { name: 'Gold', value: '#f0b81c', isHeather: false },
+                { name: 'Green', value: '#277b47', isHeather: false },
+                { name: 'Heliconia', value: '#e73e76', isHeather: false },
+                { name: 'Ice Grey', value: '#dcdee0', isHeather: false },
+                { name: 'Iron Grey', value: '#5e686c', isHeather: false },
+                { name: 'Jade', value: '#5a8968', isHeather: false },
+                { name: 'Jet Black', value: '#09080a', isHeather: false },
+                { name: 'Kelly', value: '#0e883a', isHeather: false },
+                { name: 'Kiwi', value: '#88c440', isHeather: false },
+                { name: 'Light Blue', value: '#5dade2', isHeather: false },
+                { name: 'Light Olive', value: '#ba9775', isHeather: false },
+                { name: 'Lime', value: '#a3d869', isHeather: false },
+                { name: 'Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Mauve', value: '#dcb2ca', isHeather: false },
+                { name: 'Medium Green', value: '#419e50', isHeather: false },
+                { name: 'Medium Grey', value: '#8a8b8c', isHeather: false },
+                { name: 'Midnight Navy', value: '#21303d', isHeather: false },
+                { name: 'Navy', value: '#002244', isHeather: false },
+                { name: 'Neptune Blue', value: '#0e4a80', isHeather: false },
+                { name: 'Olive Drab Green', value: '#807046', isHeather: false },
+                { name: 'Orange', value: '#dd5928', isHeather: false },
+                { name: 'Pale Pink', value: '#f2ccd6', isHeather: false },
+                { name: 'Pink Blossom', value: '#f397b4', isHeather: false },
+                { name: 'Purple', value: '#3e3455', isHeather: false },
+                { name: 'Red', value: '#c8102e', isHeather: false },
+                { name: 'Royal', value: '#1e529a', isHeather: false },
+                { name: 'Sand', value: '#d9be95', isHeather: false },
+                { name: 'Sangria', value: '#ab2e38', isHeather: false },
+                { name: 'Sapphire', value: '#2f5998', isHeather: false },
+                { name: 'Silver', value: '#c0c0c0', isHeather: false },
+                { name: 'Steel Blue', value: '#405e82', isHeather: false },
+                { name: 'Strong Blue', value: '#1f3e8d', isHeather: false },
+                { name: 'Team Purple', value: '#663399', isHeather: false },
+                { name: 'Teal', value: '#1b9ba0', isHeather: false },
+                { name: 'Texas Orange', value: '#bb4d17', isHeather: false },
+                { name: 'Tropical Blue', value: '#6db0d3', isHeather: false },
+                { name: 'True Navy', value: '#29324f', isHeather: false },
+                { name: 'True Red', value: '#bf0d3e', isHeather: false },
+                { name: 'Ultra Cotton Blue', value: '#567ebe', isHeather: false },
+                { name: 'White', value: '#FFFFFF', isHeather: false },
+                { name: 'Yellow', value: '#fed141', isHeather: false },
+                { name: 'Young Mens Heather', value: '#c9c7c6', isHeather: true }
+            ],
+            performance: [
+                { name: 'Athletic Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Carolina Blue', value: '#6787b7', isHeather: false },
+                { name: 'Charcoal', value: '#53565a', isHeather: false },
+                { name: 'Coyote Brown', value: '#755642', isHeather: false },
+                { name: 'Dark Green', value: '#225e3a', isHeather: false },
+                { name: 'Gold', value: '#f0b81c', isHeather: false },
+                { name: 'Iron Grey', value: '#5e686c', isHeather: false },
+                { name: 'Jet Black', value: '#09080a', isHeather: false },
+                { name: 'Kelly', value: '#0e883a', isHeather: false },
+                { name: 'Light Blue', value: '#5dade2', isHeather: false },
+                { name: 'Lime', value: '#a3d869', isHeather: false },
+                { name: 'Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Navy', value: '#002244', isHeather: false },
+                { name: 'Neon Blue', value: '#3fb4e9', isHeather: false },
+                { name: 'Neon Green', value: '#56fb60', isHeather: false },
+                { name: 'Neon Orange', value: '#f96c1f', isHeather: false },
+                { name: 'Neon Pink', value: '#fb3a8e', isHeather: false },
+                { name: 'Neon Yellow', value: '#c4f600', isHeather: false },
+                { name: 'Red', value: '#c8102e', isHeather: false },
+                { name: 'Royal', value: '#1e529a', isHeather: false },
+                { name: 'Silver', value: '#c0c0c0', isHeather: false },
+                { name: 'Texas Orange', value: '#bb4d17', isHeather: false },
+                { name: 'True Red', value: '#bf0d3e', isHeather: false },
+                { name: 'White', value: '#FFFFFF', isHeather: false }
+            ],
+            longsleeve: [
+                { name: 'Aquatic Blue', value: '#4c9fc8', isHeather: false },
+                { name: 'Ash', value: '#dbdbdb', isHeather: true },
+                { name: 'Athletic Heather', value: '#97999b', isHeather: true },
+                { name: 'Athletic Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Cardinal', value: '#7e2d40', isHeather: false },
+                { name: 'Carolina Blue', value: '#6787b7', isHeather: false },
+                { name: 'Charcoal', value: '#53565a', isHeather: false },
+                { name: 'Dark Chocolate Brown', value: '#453639', isHeather: false },
+                { name: 'Dark Green', value: '#225e3a', isHeather: false },
+                { name: 'Gold', value: '#f0b81c', isHeather: false },
+                { name: 'Jade', value: '#5a8968', isHeather: false },
+                { name: 'Jet Black', value: '#09080a', isHeather: false },
+                { name: 'Kelly', value: '#0e883a', isHeather: false },
+                { name: 'Light Blue', value: '#5dade2', isHeather: false },
+                { name: 'Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Navy', value: '#002244', isHeather: false },
+                { name: 'Orange', value: '#dd5928', isHeather: false },
+                { name: 'Purple', value: '#3e3455', isHeather: false },
+                { name: 'Red', value: '#c8102e', isHeather: false },
+                { name: 'Royal', value: '#1e529a', isHeather: false },
+                { name: 'Sand', value: '#d9be95', isHeather: false },
+                { name: 'Steel Blue', value: '#405e82', isHeather: false },
+                { name: 'Texas Orange', value: '#bb4d17', isHeather: false },
+                { name: 'True Navy', value: '#29324f', isHeather: false },
+                { name: 'True Red', value: '#bf0d3e', isHeather: false },
+                { name: 'White', value: '#FFFFFF', isHeather: false }
+            ],
+            hoodie: [
+                { name: 'Aquatic Blue', value: '#4c9fc8', isHeather: false },
+                { name: 'Ash', value: '#dbdbdb', isHeather: true },
+                { name: 'Athletic Heather', value: '#97999b', isHeather: true },
+                { name: 'Black Heather', value: '#2C2C2C', isHeather: true },
+                { name: 'Bright Aqua', value: '#48c9b7', isHeather: false },
+                { name: 'Brown', value: '#5e4b3c', isHeather: false },
+                { name: 'Cardinal', value: '#7e2d40', isHeather: false },
+                { name: 'Carolina Blue', value: '#6787b7', isHeather: false },
+                { name: 'Charcoal', value: '#53565a', isHeather: false },
+                { name: 'Cherry Red', value: '#b61e40', isHeather: false },
+                { name: 'Clover Green', value: '#319f44', isHeather: false },
+                { name: 'Colonial Blue', value: '#36749d', isHeather: false },
+                { name: 'Coyote Brown', value: '#755642', isHeather: false },
+                { name: 'Dark Chocolate Brown', value: '#453639', isHeather: false },
+                { name: 'Dark Green', value: '#225e3a', isHeather: false },
+                { name: 'Dark Heather Grey', value: '#4b4f54', isHeather: true },
+                { name: 'Deep Berry', value: '#823d5f', isHeather: false },
+                { name: 'Dill Green', value: '#7aa14f', isHeather: false },
+                { name: 'Electric Blue', value: '#2d82bc', isHeather: false },
+                { name: 'Forest Green', value: '#154734', isHeather: false },
+                { name: 'Gold', value: '#f0b81c', isHeather: false },
+                { name: 'Graphite Heather', value: '#63666a', isHeather: true },
+                { name: 'Green', value: '#277b47', isHeather: false },
+                { name: 'Heather Aqua', value: '#6eb9bd', isHeather: true },
+                { name: 'Heather Athletic Maroon', value: '#582d40', isHeather: true },
+                { name: 'Heather Cardinal', value: '#703c50', isHeather: true },
+                { name: 'Heather Dark Green', value: '#366552', isHeather: true },
+                { name: 'Heather Navy', value: '#3f5670', isHeather: true },
+                { name: 'Heather Purple', value: '#52445d', isHeather: true },
+                { name: 'Heather Red', value: '#a25060', isHeather: true },
+                { name: 'Heather Royal', value: '#446299', isHeather: true },
+                { name: 'Heather Sapphire', value: '#456094', isHeather: true },
+                { name: 'Ice Grey', value: '#dcdee0', isHeather: false },
+                { name: 'Iron Grey', value: '#5e686c', isHeather: false },
+                { name: 'Jade', value: '#5a8968', isHeather: false },
+                { name: 'Jet Black', value: '#09080a', isHeather: false },
+                { name: 'Kelly', value: '#0e883a', isHeather: false },
+                { name: 'Light Blue', value: '#5dade2', isHeather: false },
+                { name: 'Light Olive', value: '#ba9775', isHeather: false },
+                { name: 'Maroon', value: '#6f263d', isHeather: false },
+                { name: 'Medium Grey', value: '#8a8b8c', isHeather: false },
+                { name: 'Midnight Navy', value: '#21303d', isHeather: false },
+                { name: 'Navy', value: '#002244', isHeather: false },
+                { name: 'Neptune Blue', value: '#0e4a80', isHeather: false },
+                { name: 'Neon Blue', value: '#3fb4e9', isHeather: false },
+                { name: 'Neon Green', value: '#56fb60', isHeather: false },
+                { name: 'Neon Orange', value: '#f96c1f', isHeather: false },
+                { name: 'Neon Pink', value: '#fb3a8e', isHeather: false },
+                { name: 'Neon Yellow', value: '#c4f600', isHeather: false },
+                { name: 'Oatmeal Heather', value: '#d4c4b0', isHeather: true },
+                { name: 'Olive Drab Green', value: '#807046', isHeather: false },
+                { name: 'Orange', value: '#dd5928', isHeather: false },
+                { name: 'Pale Pink', value: '#f2ccd6', isHeather: false },
+                { name: 'Pink Blossom', value: '#f397b4', isHeather: false },
+                { name: 'Purple', value: '#3e3455', isHeather: false },
+                { name: 'Red', value: '#c8102e', isHeather: false },
+                { name: 'Royal', value: '#1e529a', isHeather: false },
+                { name: 'S. Green', value: '#00ff00', isHeather: false },
+                { name: 'S. Orange', value: '#ff6700', isHeather: false },
+                { name: 'Sand', value: '#d9be95', isHeather: false },
+                { name: 'Sangria', value: '#ab2e38', isHeather: false },
+                { name: 'Sapphire', value: '#2f5998', isHeather: false },
+                { name: 'Steel Blue', value: '#405e82', isHeather: false },
+                { name: 'Team Purple', value: '#663399', isHeather: false },
+                { name: 'Texas Orange', value: '#bb4d17', isHeather: false },
+                { name: 'True Navy', value: '#29324f', isHeather: false },
+                { name: 'True Red', value: '#bf0d3e', isHeather: false },
+                { name: 'White', value: '#FFFFFF', isHeather: false },
+                { name: 'Yellow', value: '#fed141', isHeather: false }
+            ]
+        };
+        
+        // For backward compatibility, keep garmentColors as the default t-shirt colors
+        const garmentColors = garmentColorsByType.tshirt;
         
         const inkColors = [
             { name: 'Black', value: '#000000' },
@@ -1199,9 +1416,18 @@
         function createColorBox(color, name, value, isSelected = false) {
             const box = document.createElement('label');
             box.className = 'color-box' + (isSelected ? ' selected' : '') + (color.isWhite ? ' white-color' : '');
-            box.style.backgroundColor = color.value;
+            
+            if (color.isHeather) {
+                // Generate heathered texture
+                const textureURL = generateHeather(color.value);
+                box.style.backgroundImage = `url(${textureURL})`;
+                box.style.backgroundSize = '256px 256px';
+            } else {
+                box.style.backgroundColor = color.value;
+            }
+            
             box.title = color.name;
-            if (color.isWhite) {
+            if (color.value === '#FFFFFF' || color.name.toLowerCase().includes('white')) {
                 box.style.border = '1px solid #ddd';
             }
             
@@ -1332,16 +1558,54 @@
             }, 100);
         }
         
-        // Initialize color options
-        function initializeColors() {
-            const colorOptions1 = document.getElementById('colorOptions1');
-            const colorOptions2 = document.getElementById('colorOptions2');
+        // Update color options based on garment type
+        function updateColorOptions(garmentNum, garmentType) {
+            const colorOptions = document.getElementById(`colorOptions${garmentNum}`);
+            colorOptions.innerHTML = ''; // Clear existing colors
             
-            garmentColors.forEach((color, index) => {
-                colorOptions1.appendChild(createColorBox(color, 'garmentColor1', color.name, index === 0));
-                colorOptions2.appendChild(createColorBox(color, 'garmentColor2', color.name, index === 0));
+            let colors = [];
+            switch(garmentType) {
+                case 'tshirt':
+                    colors = garmentColorsByType.tshirt;
+                    break;
+                case 'performance':
+                    colors = garmentColorsByType.performance;
+                    break;
+                case 'longsleeve':
+                    colors = garmentColorsByType.longsleeve;
+                    break;
+                case 'hoodie':
+                    colors = garmentColorsByType.hoodie;
+                    break;
+                default:
+                    colors = garmentColorsByType.tshirt;
+            }
+            
+            // Add color boxes
+            colors.forEach((color, index) => {
+                const isSelected = index === 0 || (color.name === 'White' && colors.findIndex(c => c.name === 'White') !== -1);
+                colorOptions.appendChild(createColorBox(color, `garmentColor${garmentNum}`, color.name, isSelected));
             });
             
+            // Update the selected color display
+            const selectedColor = colors[0] || { name: 'White' };
+            if (window.updateSelectedColorDisplay) {
+                window.updateSelectedColorDisplay(`garmentColor${garmentNum}`, selectedColor.name);
+            }
+            
+            // Update color price note if needed
+            if (window.updateColorPriceNote) {
+                window.updateColorPriceNote(garmentNum);
+            }
+        }
+        
+        // Initialize color options
+        function initializeColors() {
+            // Initialize with t-shirt colors by default
+            updateColorOptions('1', 'tshirt');
+            updateColorOptions('2', 'tshirt');
+            
+            // Initialize ink colors (these remain the same for all garments)
             const inkFillOptions1 = document.getElementById('inkFillOptions1');
             const inkFillOptions2 = document.getElementById('inkFillOptions2');
             
@@ -1398,6 +1662,52 @@
                     return customColors[name] || '#000000';
                 }
                 return selected ? selected.value : '';
+            }
+            
+            function getSelectedColorObject(garmentNum) {
+                const garmentType = garmentNum === '1' ? garmentType1.value : garmentType2.value;
+                const selectedColorName = getSelectedColor(`garmentColor${garmentNum}`);
+                
+                let colors = [];
+                switch(garmentType) {
+                    case 'tshirt':
+                        colors = garmentColorsByType.tshirt;
+                        break;
+                    case 'performance':
+                        colors = garmentColorsByType.performance;
+                        break;
+                    case 'longsleeve':
+                        colors = garmentColorsByType.longsleeve;
+                        break;
+                    case 'hoodie':
+                        colors = garmentColorsByType.hoodie;
+                        break;
+                    default:
+                        colors = garmentColorsByType.tshirt;
+                }
+                
+                return colors.find(c => c.name === selectedColorName) || { name: selectedColorName, value: '#ffffff', isHeather: false };
+            }
+            
+            function updateSelectedColorDisplay(name, value) {
+                let displayId = '';
+                if (name === 'garmentColor1') displayId = 'selectedGarmentColor1';
+                else if (name === 'garmentColor2') displayId = 'selectedGarmentColor2';
+                else if (name === 'inkFill1') displayId = 'selectedInkFill1';
+                else if (name === 'inkFill2') displayId = 'selectedInkFill2';
+                else if (name === 'inkOutline1') displayId = 'selectedInkOutline1';
+                else if (name === 'inkOutline2') displayId = 'selectedInkOutline2';
+                
+                const display = document.getElementById(displayId);
+                if (display) {
+                    if (value.startsWith('#')) {
+                        display.textContent = `Custom (${value})`;
+                    } else if (value === 'custom' && customColors[name]) {
+                        display.textContent = `Custom (${customColors[name]})`;
+                    } else {
+                        display.textContent = value;
+                    }
+                }
             }
             
             function updateSelectedColorDisplay(name, value) {
@@ -1492,7 +1802,7 @@
             }
             
             function updatePreview(garmentNum) {
-                const garmentColor = getSelectedColor(`garmentColor${garmentNum}`);
+                const selectedColorObj = getSelectedColorObject(garmentNum);
                 const fillColor = getSelectedColor(`inkFill${garmentNum}`);
                 const outlineColor = getSelectedColor(`inkOutline${garmentNum}`);
                 const teamName = teamNameInput.value || 'TEAM NAME';
@@ -1500,11 +1810,15 @@
                 const preview = document.getElementById(`preview${garmentNum}`);
                 const teamNamePreview = document.getElementById(`teamNamePreview${garmentNum}`);
                 
-                const selectedGarmentColor = garmentColors.find(c => c.name === garmentColor);
-                if (selectedGarmentColor) {
-                    preview.style.backgroundColor = selectedGarmentColor.value;
-                } else if (garmentColor.startsWith('#')) {
-                    preview.style.backgroundColor = garmentColor;
+                // Set background based on whether it's heathered or not
+                if (selectedColorObj.isHeather) {
+                    const textureURL = generateHeather(selectedColorObj.value);
+                    preview.style.backgroundImage = `url(${textureURL})`;
+                    preview.style.backgroundSize = '256px 256px';
+                    preview.style.backgroundColor = '';
+                } else {
+                    preview.style.backgroundImage = '';
+                    preview.style.backgroundColor = selectedColorObj.value;
                 }
                 
                 teamNamePreview.textContent = teamName;
@@ -1556,6 +1870,7 @@
             window.updatePreview = updatePreview;
             window.updateSelectedColorDisplay = updateSelectedColorDisplay;
             window.updateCost = updateCost;
+            window.updateColorPriceNote = updateColorPriceNote;
             
             function updateQuantityIndicators() {
                 const g1Qty = getGarmentQuantity(g1SizeIds);
@@ -1757,11 +2072,13 @@
             // Event listeners
             garmentType1.addEventListener('change', function() {
                 updateColorSelection(this, '1');
+                updateColorOptions('1', this.value);
                 updateCost();
             });
             
             garmentType2.addEventListener('change', function() {
                 updateColorSelection(this, '2');
+                updateColorOptions('2', this.value);
                 updateCost();
             });
             
